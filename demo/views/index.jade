@@ -304,7 +304,7 @@ html
                   pre.language-coffeescript
                     code
                       :escape
-                        wx.download req.media_id, (err, image) ->
+                        wx.download req.media_id, (err, voice) ->
                   br
                   p.note <code>res.voice</code>亦接收语音文件路径，自动上传语音（为避免请求超时，建议预传语音，或先<code>ok</code>再发送客服语音消息）。
                 div.div_other_video.tab-pane
