@@ -1,0 +1,927 @@
+doctype html
+html
+  head
+    title WeiXin ๏ 微信应用框架
+    meta(http-equiv="Content-Type", content="text/html; charset=ISO-8859-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    
+    // wx ico
+    link(href='https://res.wx.qq.com/mpres/htmledition/images/favicon1ddd38.ico',rel='Shortcut Icon')
+
+    // Library css
+    link(rel='stylesheet', href='//cdn.wedocare.com/vendor/prism/0.0.1/prism.css')
+    
+    // bootstrap
+    link(rel='stylesheet',href='//cdn.wedocare.com/vendor/bootstrap/3.1.1/css/bootstrap.min.css')
+    
+    // app css
+    link(rel='stylesheet', href='/css/app.css')
+
+    // 百度统计
+    script
+      | var _hmt = _hmt || [];
+      | (function() {
+      |   var hm = document.createElement("script");
+      |   hm.src = "//hm.baidu.com/hm.js?0f7847e605b04c5c85109c56fa582ce3";
+      |   var s = document.getElementsByTagName("script")[0]; 
+      |   s.parentNode.insertBefore(hm, s);
+      | })();
+    
+
+  body
+    div#div_affix.middle
+      ul.nav.bs-sidenav
+        li
+          a(data-scroll, href='#div_home') 首页
+        li
+          a(data-scroll, href='#div_install') 安装
+        li
+          a(data-scroll, href='#div_message', class='sum_icon') 接收消息 +
+          ul.nav
+            li
+              a(data-scroll, href='#div_message') 文本消息 ◆
+            li
+              a(data-scroll, href='#div_other_message') 其他消息 ◆
+        li
+          a(data-scroll, href='#div_send_message') 发送消息
+        li
+          a(data-scroll, href='#div_click_button', class='sum_icon') 按钮 +
+          ul.nav
+            li
+              a(data-scroll, href='#div_click_button') 点击按钮 ◆
+            li
+              a(data-scroll, href='#div_edit_button') 编辑按钮 ◆
+        li
+          a(data-scroll, href='#div_login', class='sum_icon') 二维码 +
+          ul.nav
+            li
+              a(data-scroll, href='#div_login') 扫描二维码登录 ◆
+            li
+              a(data-scroll, href='#div_fruit') 临时二维码 ◆
+            li
+              a(data-scroll, href='#div_ad') 永久二维码 ◆
+        li
+          a(data-scroll, href='#div_subscribe') 关注与取消关注
+        li
+          a(data-scroll, href='#div_subscribe_list') 获取关注者列表
+        li
+          a(data-scroll, href='#div_fsm') 有限状态机
+
+    // 首页 
+    div#div_home.page.scrolled_to
+      div.header
+        img#qrcode_home(continuous='', src='/wx/qrcode/home?rand=#{~~(1000 * Math.random())}')
+        div
+      div.middle
+        div.container
+          div.row.gutter 
+            div.col-md-12
+              h1.home_title WeiXin
+              p  (minimalist) WeChat Middleware for Express.js
+              h1.home_title_2 微信应用框架
+          div.row
+            p.col-md-3.
+              <br/><br/>
+              <abbr>wx</abbr>是极简设计的微信（公共平台）应用参考级框架，<span class='note'>而并非微信接口在<abbr>node.js</abbr>下的幂等映射</span>。
+            p.col-md-3.
+              <b>方法</b><br/><br/>
+              <abbr>wx</abbr>面向微信应用的普适需求，为开发者设计自然的<a class='tp' data-title='DX = Developer Experience'>研发体验</a>。<br/>
+              多数场景中，<abbr>wx</abbr>默默地协调着数个微信接口，允许开发者朴素、直观地定义微信应用的用户体验。
+            p.col-md-3.
+              <b>目的</b><br/><br/>
+              <abbr>wx</abbr>鼓励开发者以终端用户所理解的<a href='http://en.wikipedia.org/wiki/Literate_programming'>文学化编程</a>风格，<a class='tp' data-title='Top-Down Design'>自顶向下</a>叙述产品行为（被非极客称为编码😸）；开心地忽略与用户体验无关的部分技术细节🍻。
+      div.bottom
+        div.container
+          div.row
+            ul#ul_home_footer.col-md-6
+              li.github
+                a.a_github(href='https://github.com/baoshan/wx', target='blank')
+              li
+                iframe(src='http://ghbtns.com/github-btn.html?user=baoshan&repo=wx&type=watch&count=true', allowtransparency='true', frameborder='0', scrolling='0', width='95', height='20')
+              li
+                iframe(src='http://ghbtns.com/github-btn.html?user=baoshan&repo=wx&type=fork&count=true', allowtransparency='true', frameborder='0', scrolling='0', width='95', height='20')
+
+
+    // 安装 
+    div#div_install.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-4
+              h1.install_title.gutter 安装
+              ul.install_step
+                li
+                  pre.language-
+                    code.language- npm install wx
+                li
+                  ol
+                    li ☞ 登录<a href='http://mp.weixin.qq.com/'>微信公众平台</a>
+                    li ☞ 高级功能
+                    li ☞ 开发模式，获取🔑
+                  br
+                  p.note 配置服务器时仅<code>token</code>必须。
+                li
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        app = express()
+                        wx  = new require 'wx'
+                          token      : 'xxx-xx-xx'
+                          app_id     : 'xx-xxx'
+                          app_secret : 'xxxxxxxxxxxx'
+                  pre.language-coffeescript#code_redis_options
+                    code
+                      :escape
+                        # redis_options
+                          redis_options :
+                            host     : 'redis.example.com'
+                            port     : '6379'
+                            options  : auth_pass: 'password'
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        app.use '/wx', wx
+                li 启动应用程序后，修改微信开发模式中服务器配置为：<code>http://server.address/wx</code>，且有与程序相一致的<code>token</code>。
+            div.col-md-5.install_pic.
+              <b>==!</b><br/><br/>
+              <code>wx</code>要求在线的<code><a href='http://redis.io'>Redis</a></code>实例。默认情况下，<code>wx</code>尝试连接本地实例，您可以<a href='#code_redis_options'>指定Redis连接</a>。利用<abbr>Redis</abbr>，<abbr>wx</abbr>具备：<br/><br/>
+              <ul>
+                <li>集群模式下自动管理微信令牌；</li>
+                <li>浏览器端捕捉二维码扫描；</li>
+                <li>等功能。</li>
+              </ul>
+              <a class='mp' href='http://mp.weixin.qq.com/'>微信公众平台</a>
+
+
+    // 接收文本消息 
+    #div_message.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5
+            // 无内容、占位
+            div.col-md-5
+              h1.message_title.gutter 接收文本消息
+              p 通过<code>wx.text</code>注册文本消息处理流程：
+              ul
+                li <code>req.content</code>为用户所发文本；
+                li <code>req.user</code>包含<a href='http://mp.weixin.qq.com/wiki/index.php?title=获取用户基本信息' target='blank'>用户基本信息</a>。
+              p 探索几种根据用户发送文本，通过<code>res.text</code>被动回复的方式：
+              div#message_content.active
+                // 手机
+                div.message_phone(data-message-title='会话')
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 北京天气
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 北京，晴☀️
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 你好
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 👦，么么哒
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 你是谁
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 你是谁，喵呜~
+                
+                br
+                b 匹配正则表达式
+                div#text_pattern
+                  pre.language-coffeescript
+                    code
+                      :escape= TEXT_PATTERN 
+                br
+                b 接收文本常量
+                div#text_constant
+                  pre.language-coffeescript
+                    code
+                      :escape= TEXT_CONSTANT
+                br
+                b 接收任意文本
+                div#text_all
+                  pre.language-coffeescript
+                    code
+                      :escape= TEXT_ALL
+              br
+              p.note <code>wx</code>按注册顺序匹配消息，最后注册接收任意文本句柄。
+
+
+    // 接收其他消息
+    div#div_other_message.page
+     div.middle
+        div.container
+          div.row
+            // 占位用
+            div.col-md-5
+            div.col-md-5
+              h1.gutter 接受其他消息
+              ul.nav.nav-pills.other_message_nav.gutter
+                // 发图片
+                li.active
+                  a(data-toggle='tab',href='.div_other_img')
+                // 发语音
+                li 
+                  a(data-toggle='tab',href='.div_other_voice')
+                // 发视频
+                li 
+                  a(data-toggle='tab',href='.div_other_video')
+                // 发地理位置
+                li 
+                  a(data-toggle='tab',href='.div_other_location')
+                // 发链接
+                li 
+                  a(data-toggle='tab',href='.div_other_link')
+                  
+              // 手机
+              div.message_phone.tab-content(data-message-title='会话')
+                div.div_other_img.tab-pane.fade.in.active 
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner
+                
+                div.div_other_voice.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 语音
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 语音
+
+                div.div_other_video.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 么么哒，好好看哟
+                    
+                div.div_other_location.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 您在深圳市
+                
+                div.div_other_link.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 《…》一文发人深省…
+
+              // code
+              div.tab-content.tab-content_code
+                div.div_other_img.tab-pane.active
+                  p 下面演示了通过<code>wx.image</code>接收用户发送图片，再以<code>res.image</code>被动回复相同图片的方式：
+                  pre.language-coffeescript
+                    code
+                      :escape=RECEIVE_IMAGE
+                  br
+                  p 可以通过<code>wx.download</code>下载图片，得到图片<code>buffer</code>：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.download req.media_id, (err, image) ->
+                  br
+                  p.note <code>res.image</code>亦接收图片文件路径，自动上传图片（为避免请求超时，建议预传图片，或先<code>ok</code>再发送客服图片消息）。
+                div.div_other_voice.tab-pane
+                  p 下面演示了通过<code>wx.voice</code>接收用户发送语音，再以<code>res.voice</code>被动回复相同语音的方式：
+                  pre.language-coffeescript
+                    code
+                      :escape=MESSAGE_VOICE
+                  br
+                  p 可以通过<code>wx.download</code>下载语音，得到语音<code>buffer</code>：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.download req.media_id, (err, image) ->
+                  br
+                  p.note <code>res.voice</code>亦接收语音文件路径，自动上传语音（为避免请求超时，建议预传语音，或先<code>ok</code>再发送客服语音消息）。
+                div.div_other_video.tab-pane
+                  p 下面演示了通过<code>wx.video</code>接收用户发送视频，再以<code>res.video</code>回复视频文件的方式：
+                  pre.language-coffeescript
+                    code
+                      :escape=RECEIVE_VIDEO
+                div.div_other_location.tab-pane
+                  p 下面演示了通过<code>wx.location</code>接收用户发送地理位置，通过<code>req.label</code>、<code>req.location_y</code>、<code>req.location_x</code>获取地址、维度、经度的方式：
+                  pre.language-coffeescript
+                    code
+                      :escape=RECEIVE_LOCATION
+                div.div_other_link.tab-pane
+                  p 下面演示了通过<code>wx.link</code>接收用户发送链接，通过<code>req.title</code>、<code>req.description</code>、<code>req.url</code>获取标题、描述与链接的方式：
+                  pre.language-coffeescript
+                    code
+                      :escape=RECEIVE_LINK
+
+
+    // 发送消息 
+    div#div_send_message.page
+      div.middle
+        div.container
+          div.row
+            // 占位用
+            div.col-md-5
+            div.col-md-6
+              h1.gutter 发送消息
+              // p.gutter 集群进程访问令牌的共享与更新;二维码场景编号的自动递增管理集群进程访问令牌的共享与更新,集群进程访问令牌的共享与更新;
+              ul.nav.nav-pills.send_message_nav.gutter
+                // 发文本
+                li.active
+                  a(data-toggle='tab',href='.div_text')
+                // 发图片
+                li 
+                  a(data-toggle='tab',href='.div_img')
+                // 发语音
+                li 
+                  a(data-toggle='tab',href='.div_voice')
+                // 发视频
+                li 
+                  a(data-toggle='tab',href='.div_video')
+                // 发音乐
+                li 
+                  a(data-toggle='tab',href='.div_music')
+                // 发图文
+                li 
+                  a(data-toggle='tab',href='.div_img_text')
+                //发客服
+                li 
+                  a(data-toggle='tab',href='.div_customer')
+                  
+              // 手机
+              div.message_phone.tab-content(data-message-title='会话')
+                div.div_text.tab-pane.fade.in.active 
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 你好
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 你好，么么哒
+                
+                div.div_img.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner
+
+                div.div_voice.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 语音
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 语音
+                    
+                div.div_video.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner
+                
+                div.div_music.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 音乐
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner
+                    
+                div.div_img_text.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 图文
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner
+                    
+                div.div_customer.tab-pane.fade
+                  div.message.right
+                    div.message_from(data-title='👦')
+                    div.message_inner 客服
+                  div.message.left
+                    div.message_from(data-title='💻')
+                    div.message_inner 客服
+
+              // code
+              div.tab-content.tab-content_code
+                div.div_text.tab-pane.active
+                  br
+                  b 被动回复文本消息：
+                  pre.language-coffeescript
+                    code
+                      :escape= MESSAGE_TEXT
+                  p 5秒内无法应答时，先<code>200</code>，再通过<code>req.user</code>发送客服文本消息（避免微信服务器发起重试）：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.text '文本', (req, res) ->
+                          res.ok()
+                            req.user.text '北京，晴[太阳]'
+                  br
+                  b 主动发送客服文本消息：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.user('xx_xxx').text('北京，晴[太阳]')
+                div.div_img.tab-pane
+                  br
+                  b 被动回复图片消息：
+                  p 使用<code>res.image</code>被动回复图片。既可指定本地文件路径，由<code>wx</code>自动上传图片；亦可直接传入有效的<code>media_id</code>，省略上传图片步骤。
+                  pre.language-coffeescript
+                    code
+                      :escape= RECEIVE_IMAGE
+                  p 如需上传图片，建议先<code>200</code>，再通过<code>req.user</code>发送客服消息，以免因上传耗时超5秒导致重试。
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.image (req, res) ->
+                          res.ok()
+                          req.user.image 'image.jpg'
+                  p 上传图片获取<code>media_id</code>方式为：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.upload 'image', 'image.jpg', (req, res) ->
+                          # res.media_id 是上传图片的 media_id
+                  br
+                  b 主动发送客服图片消息：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.user('xx_xxx').image('image.jpg')
+                div.div_voice.tab-pane
+                  br
+                  b 被动回复语音消息：
+                  p 使用<code>res.voice</code>被动回复语音。既可指定本地文件路径，由<code>wx</code>自动上传语音；亦可直接传入有效的<code>media_id</code>，省略上传语音步骤。
+                  pre.language-coffeescript
+                    code
+                      :escape= MESSAGE_VOICE
+                  p 如需上传语音，建议先<code>200</code>，再通过<code>req.user</code>发送客服消息，以免因上传耗时超5秒导致重试。
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.voice (req, res) ->
+                          res.ok()
+                          req.user.voice 'voice.amr'
+                  p 上传语音获取<code>media_id</code>方式为：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.upload 'voice', 'voice.amr', (req, res) ->
+                          # res.media_id 是可以重用的语音 media_id
+                  br
+                  b 主动发送客服语音消息：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.user('xx_xxx').voice('voice.amr')
+                div.div_video.tab-pane
+                  br
+                  b 被动发送视频消息： 
+                  p 使用<code>res.video</code>被动回复视频。既可指定本地文件路径，由<code>wx</code>自动上传语音；亦可直接传入有效的<code>media_id</code>，省略上传视频步骤。
+                  pre.language-coffeescript
+                    code
+                      :escape= RECEIVE_VIDEO
+                  p 如需上传视频，建议先<code>200</code>，再通过<code>req.user</code>发送客服消息，以免因上传耗时超5秒导致重试。
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.video (req, res) ->
+                          res.ok()
+                          req.user.video ...
+                  p 上传视频获取<code>media_id</code>方式为：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.upload 'video', 'video.mp4', (req, res) ->
+                          # res.media_id 是可以重用的视频 media_id
+                  br
+                  b 主动发送视频消息：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.user('xx_xxx').video ...
+                div.div_music.tab-pane
+                  br
+                  b 被动发送音乐消息：
+                  p 需上传专辑图片时，先<code>200</code>，再通过<code>req.user.music</code>发送客服音乐消息（避免上传耗时超5秒，微信服务器发起重试）：
+                  pre.language-coffeescript
+                    code
+                      :escape= MESSAGE_MUSIC
+                  p 无客服消息权限，或已知专辑封面<code>thumb_media_id</code>时，可直接回复音乐：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.text '音乐', (req, res) ->
+                          res.music music
+                  p 上传缩略图获取<code>media_id</code>方式为：
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.upload 'thumb', 'cover.jpg', (req, res) ->
+                          # res.thumb_media_id 是可以重用的缩略图 thumb_media_id
+                  br
+                  b 主动发送音乐消息：举一反三😄
+                div.div_img_text.tab-pane
+                  br
+                  b 被动发送图文消息：
+                  pre.language-coffeescript
+                    code
+                      :escape= MESSAGE_NEWS
+                  p 亦可通过<code>req.user</code>发送客服新闻消息
+                  pre.language-coffeescript
+                    code
+                      :escape
+                        wx.text '新闻', (req, res) ->
+                          res.ok()
+                          req.user.news news
+                  br
+                  b 主动发送图文消息：举一反三😄
+                div.div_customer.tab-pane
+                  br
+                  b 消息转多客服：
+                  p 通过<code>res.transfer</code>方法，将消息转发到多客服：
+                  pre.language-coffeescript
+                    code
+                      :escape= SEND_TRANSFER
+                  br
+                  p.note <a href='http://mp.weixin.qq.com'>公共平台开发者文档</a>有更多关于多客服的开发者资料。在<a href='http://dkf.qq.com'>多客服</a>网站下载客户端。
+
+
+    // 点击按钮
+    div#div_click_button.page
+      div.middle
+        div.container
+          div.row.gutter
+            div.col-md-5
+              pre.language-coffeescript
+                code
+                  :escape= CLICK_BUTTON
+            div.col-md-5 
+              h1.click_button_title 点击按钮
+              p.
+                响应按钮点击，我们努力迫近最为自然的方式：<br/>
+                使用<code>wx.click</code>方法，指定被点击按钮名称，即可捕捉该按钮点击事件。
+          div.row.click_button_pic
+            div.col-md-5 
+              div.click_button_hand
+            div.col-md-6
+              div.click_button_iphone
+
+
+    // 编辑按钮
+    div#div_edit_button.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5
+              div.tab-content.tab_content_demo
+                div#div_edit_button_demo.tab-pane.fade.in.active
+                  // 手机
+                  div.message_phone.tab-content(data-message-title='按钮')
+                    ul
+                      li
+                      li
+                      li
+                      li
+                    div.btn_group_demo
+
+                      div#div_buttons
+                      // buttons
+
+                div#div_edit_button_demo_code.tab-pane.fade
+                  pre.language-coffeescript
+                    code
+              ul.nav.nav-pills.gutter
+                li.active
+                  a(data-toggle='tab',href='#div_edit_button_demo') 手机演示
+                li 
+                  a(data-toggle='tab',href='#div_edit_button_demo_code') 代码
+
+              
+            div.col-md-6
+              h1 编辑按钮
+              p 编辑菜单是一种内容创意，应当由<code>markdown</code>来完成。使用<code>wx</code>，你可以立即预览菜单效果，无需关注更多。安装<code>wx</code>后，可以通过<code>http://server.address/wx/admin</code>地址进入管理界面。
+              div#div_markdown_content
+                span markdown
+                p http://server.address/wx/admin
+                textarea#textarea_markdown
+                  | + 点击按钮
+                  | 
+                  | + [链接文档](http://mp.weixin.qq.com/wiki)
+                  | 
+                  | + 二级菜单
+                  |    - [链接跳转](http://github.com/baoshan/wx)
+                  |    - 拉取信息
+              
+
+      script#template_div_buttons(type='text/template')
+        
+        | {{#.}}<div class='btn-group dropup' length='{{length}}'><a class='btn btn-danger dropdown-toggle {{#sub_button}} option_icon{{/sub_button}}' {{#url}}href='{{.}}' target='blank'{{/url}} {{^url}}data-toggle='dropdown'{{/url}}>{{name}}</a><ul class='dropdown-menu' role='menu'>{{#sub_button}}<li><a class='btn btn-danger' {{#url}}href='{{.}}' target='blank'{{/url}}>{{name}}</a></li>{{/sub_button }}</ul></div>{{/.}}
+
+      script
+        != markdown_2_json
+
+
+    // 扫描二维码登录 
+    div#div_login.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5
+              h1.gutter.login_title 扫描二维码登录
+              p 服务器端通过<code>wx.scan</code>注册扫码处理流程<sup>*</sup>。响应句柄参数分别为：
+              ol
+                li 浏览器请求，包含<code>req.session</code>会话、<code>req.user</code>微信用户、<code>req.query</code>二维码参数；
+                li 微信响应，可被动回复各种消息；
+                li 浏览器回调方法，可向浏览器发送任意数据。
+              pre.language-coffeescript
+                code
+                  :escape=QRCODE_LOGIN
+              p 标记语言*
+              pre.language-markup
+                code
+                  :escape
+                    <script src="/wx/wx.js"></script>
+                    <img id="登录二维码" src="/wx/qrcode?from=网页" />
+              p 浏览器端
+              pre.language-coffeescript
+                code
+                  :escape=QRCODE_CLIENT_LOGIN
+              br
+              p.note 建议为所有二维码指定名称进行分类，见临时二维码与永久二维码部分。
+              // 手机
+              div.message_phone.tab-content(data-message-title='扫一扫')    
+                div.login_pic 
+                  img(id='登录二维码', src='/wx/qrcode?from=网页&rand=#{~~(1000 * Math.random())}')
+                  // img(id='登录二维码', src='/wx/qrcode?rand=#{~~(1000 * Math.random())}' data-title='title')
+                  label 扫描成功, 
+                    br                
+                    | 正在登录,请稍候
+                 
+
+    // 扫描二维码选择喜欢的水果 
+    div#div_fruit.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5 
+              h1.fruit_title.gutter 临时二维码
+              p 指定名称，可为二维码分类。下面二维码名称为<code>fruits</code>：
+              pre.language-markup
+                code
+                  :escape
+                    <script src="/wx/wx.js"></script>
+                    <img src="/wx/qrcode/fruits?name=🍒" />
+              p.note <code>wx</code>自动为被扫描的二维码增加<code>scanned</code>类名。
+            div.col-md-6 
+              p.gutter 服务器端在<code>wx.scan</code>中指定二维码名称，注册该类二维码的处理流程。
+              pre.language-coffeescript
+                code
+                  :escape=QRCODE_TEMPORARY
+                  
+          div.row.like_fruit_pic
+            div.col-md-5
+              img(class='临时二维码',src='/wx/qrcode/fruits?name=苹果&rand=#{~~(1000 * Math.random())}')
+              div.apple
+                
+            div.col-md-6
+              img(class='临时二维码', continuous='', src='/wx/qrcode/fruits?name=樱桃&rand=#{~~(1000 * Math.random())}')
+              div.cherry
+
+
+    // 统计广告投放效果 
+    div#div_ad.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-6
+              h1.gutter.ad_title 永久二维码
+              p.note 永久二维码图案稳定，永不过期，适于印刷品、广告等，实现来源统计用途。
+              p 名称在<code>1</code>－<code>100000</code>间为永久二维码，<code>[continuous]</code>条码支持连续扫描：
+              pre.language-markup
+                code
+                  :escape
+                    <img id="永久二维码" src="/wx/qrcode/6?from=路牌" continuous />
+              br
+              p 服务器端，通过<code>permanent</code>名称注册永久二维码扫码处理流程，用<code>req.params.scene_id</code>获取编号。
+              pre.language-coffeescript
+                code
+                  :escape=QRCODE_PERMANENT
+              br
+              p 浏览器端，通过<code>scan</code>方法，捕捉永久二维码扫描事件
+              pre.language-coffeescript
+                code
+                  :escape=QRCODE_CLIENT_PERMANENT
+              div.ad_pic
+                div#div_portraits
+                  div#div_headimgs
+                    each subscriber in subscribers
+                      img(src = '#{subscriber.headimgurl}' title='#{subscriber.nickname}')
+                  
+                  div
+                    p.subscribe_title 扫一扫
+                     br
+                     | 与他们共同关注
+                    img(id='永久二维码', continuous='', src='/wx/qrcode/6?from=路牌')
+
+    // 关注与取消关注 
+    div#div_subscribe.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5
+            div.col-md-5 
+              h1 关注与取消关注
+              // 手机
+              div.message_phone.tab-content(data-message-title='关注')
+                ul
+                  li
+                  li
+                  li
+                  li
+                button.btn.btn-danger 关注
+              br
+              b 关注
+              p 通过<code>wx.subscribe</code>注册关注事件。
+              pre.language-coffeescript
+                code
+                  :escape=SUBSCRIBE
+              p.note 当用户通过扫描二维码关注时，如已注册相应的二维码扫码处理流程，则交给该流程处理，不触发<code>subscribe</code>事件，仍可根据<code>scan</code>事件的<code>req.event</code>为<code>subscribe</code>判断用户为通过扫码关注。
+              br
+              b 取消关注
+              p 通过<code>wx.unsubscribe</code>注册取消关注事件。
+              pre.language-coffeescript
+                code
+                  :escape=UNSUBSCRIBE
+
+
+    // 获取关注者列表
+    div#div_subscribe_list.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5 
+              h1 获取关注者列表
+              p 通过<code>wx.subscribers</code>方法，拉取关注者列表：
+              pre.language-coffeescript
+                code
+                  :escape=SUBSCRIBERS
+              p 获取到的关注者列表结构：
+              pre.language-coffeescript
+                code
+                  :escape
+                    {
+                      "total" : 23000,
+                      "count" : 10000,
+                      "data"  : {"openid": ["OPENID1", ...]},
+                      "next_openid": "NEXT_OPENID"
+                    }
+              p 亦可指定<code>next_openid</code>，拉取后续用户列表：
+              pre.language-coffeescript
+                code
+                  :escape
+                    wx.subscribers next_openid, (err, res) ->
+
+            div.col-md-6
+              h1.h1_more 更多时候…
+              p 可以考虑用<code>wx.populate_subscribers</code>获取指定范围内关注者完整信息（分页显示关注用户、批量发送客服消息等）。
+              pre.language-coffeescript
+                code
+                  :escape=POPULATE_SUBSCRIBERS
+              p 获取到的指定范围关注者完整信息结构：
+              pre.language-coffeescript
+                code
+                  :escape
+                    {
+                      total       : 23000,
+                      subscribers : [{
+                        "subscribe"      : 1,
+                        "openid"         : "......",
+                        "nickname"       : "Band",
+                        "sex"            : 1,
+                        "language"       : "zh_CN",
+                        "city"           : "广州",
+                        "province"       : "广东",
+                        "country"        : "中国",
+                        "headimgurl"     : "http://wx.qlogo.cn/...",
+                        "subscribe_time" : 1382694957
+                      }, ...]
+                    }
+
+      div.bottom
+        div.container
+          div.row
+
+
+    // 有限状态机 
+    div#div_fsm.page
+      div.middle
+        div.container
+          div.row
+            div.col-md-5 
+              h1 有限状态机
+              br
+              p 定义用户所处状态与各状态间跃迁条件，微信应用框架帮助您分解复杂业务，且毫不妥协研发体验：
+              pre.language-coffeescript
+                code
+                  :escape
+                    wx.click '申办', (req, res) ->
+                      res.text '回复“固话”申办固话，回复“宽带”申办宽带。'
+                      req.user.state '申办'
+
+                    wx.state('申办').text '固话', (req, res) ->
+                      req.text '正在为您申办固话业务，请提供认证照片。'
+                      req.user.state '认证'
+
+                    wx.state('认证').image (req, res) ->
+                      req.text '已收到您提交的认证图片，请发送装机地址。'
+                      req.user.state '装机'
+
+                    wx.state('装机').location (req, res) ->
+                      res.text "工程师正前往#{req.label}为您安装固话。"
+                      req.user.state null
+              br
+              p.note 这个创意尚未实现😿，But, <a href='mailto:kuaiyusheng@wedocare.com?subject=Let&#039;s have a hackathon，来自微信应用框架&body=Hey ya! 我们一起设计现代的互联网应用！%0D%0A%0D%0A附件中是我的简历，我的GitHub账号是：'>let's have a hackathon🙋</a>，更<a href='mailto:kuaiyusheng@wedocare.com?subject=Let&#039;s have a hackathon，来自微信应用框架&body=Hey ya! 我们一起设计现代的互联网应用！%0D%0A%0D%0A附件中是我的简历，我的Dribbble或Behance账号是：'>欢迎设计师⛄️加入</a>。我们提供有竞争力的薪资、福利与工作环境。
+            div.col-md-5
+              pre#pre_fsm
+                |                       #                                                                            
+                |                        j                                                                           
+                |                          #                                                                         
+                |                         t                                                                          
+                |                       ,,,,,,j                                                                      
+                |                     j,,,,,,,,,#                                                                    
+                |                    ,,,,,,,,,,,,,                                   ##    j#                        
+                |          G   ;;   ,,,,,,,,,,,,,,G                                G  #j,,,#  #                      
+                |         j       G ,,,,,###,,,,,,,;                              # ,,,,,,,,,, ;                     
+                |     #            j,,,,,,,#,,,,,,,,                             #;,,,,,,,,,,,,#;                    
+                |      #           ,,,,,,,,#,,,,,,,,                            # ,,,,,,,,,,,,,, #  #    j           
+                |    ;###          ,,,,,,,,#,,,,,,,,                             G,,,,,,###,,,,,,            #       
+                |    #  #          ,,,,,,,,#,,,,,,,,                           t ,,,,,,,,,#,,,,,, #          #       
+                |    G ## #        #,,,,,,,#,,,,,,,#                           # ,,,,,,,,,#,,,,,,##          #  #    
+                |    G# #        ;#j,,,,,,###,,,,,,                      G##   #;,,,,,,,###,,,,,,Gj          #  #    
+                |           #  jt   G,,,,,,,,,,,,,                          #  # ,,,,,,,,,,#,,,,,#G          #  #    
+                |                    #,,,,,,,,,,,#                       ####  # ,,,,,,,,,#j,,,,, #          #  #    
+                |                      ,,,,,,,,,                         #  #    #,,,,,,##,,,,,,, ##         #;#     
+                |                         ##G                            ####   # ,,,,,,,,,,,,,, j ; t##;            
+                |                                                             j  t ,,,,,,,,,,,,; G                   
+                |                     #                                     G     ; #,,,,,,,,j  j                    
+                |                     #                                            #  #j,,,#  t#                     
+                |                     ## ;;                              #          t#  #   ##                       
+                |                     #;  #                             #              ###j                          
+                |                     #   #                            ;               #                             
+                |                     ##  #                           #                                              
+                |                     # #G                           #                G                              
+                |                           j                       ;                                                
+                |                           G                                        t                               
+                |                                                                   #                                
+                |                                                                                                    
+                |                            G                                                                       
+                |                                                #                G                                  
+                |                                                                G                                   
+                |                                               #               #                                    
+                |                              ;                               ;                                     
+                |                                              #              j                                      
+                |                               j                            #                                       
+                |                                             #j            ;                                        
+                |                                       jGjGj #                                                      
+                |                                 #G  ,,,,,,,,,          t                                           
+                |                                  #t,,,,,,,,,,,G      j                                             
+                |                                   ,,,,,,,,,,,,,j   #                                               
+                |                                  ,,,,,j##,,,,,,,;    #                                             
+                |                                 #,,,,,,,,#,,,,,,G    # #;                                          
+                |                                 ,,,,,,,,,#,,,,,,,    #j j                                          
+                |                                 ,,,,,,,,,#,,,,,,,    #   #                                         
+                |                                 ,,,,,,,j#,,,,,,,,    #   G                                         
+                |                                 j,,,,,,#,,,,,,,,,    ## #                                          
+                |                            G     ,,,,,####,,,,,,                                                   
+                |                                  G,,,,,,,,,,,,,j                                                   
+                |                          G        ,,,,,,,,,,,,,                                                    
+                |                                    j,,,,,,,,,#                                                     
+                |                                      G,,,,,#                                                       
+                |                                     #                                                              
+                |                     ###G           G#                                                              
+                |                        # #                                                                         
+                |                     ####  G     #                                                                  
+                |                     #  #                                                                           
+                |                     G#G#                                                                           
+
+    script(src='//cdn.wedocare.com/vendor/Library/library.min.js')
+    script(src='//cdn.wedocare.com/vendor/bootstrap/3.1.1/js/bootstrap.min.js')
+    script(src='/wx/wx.js')
+    script var headimgurls = !{headimgurls};
+    script(src='/js/app.js')
+

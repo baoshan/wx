@@ -1,0 +1,77 @@
+<html>
+<head>
+  <title>login</title>
+  <link href="https://res.wx.qq.com/mpres/htmledition/images/favicon1ddd38.ico" rel="Shortcut Icon">
+  <link rel="stylesheet" href="//cdn.wedocare.com/vendor/bootstrap/3.1.1/css/bootstrap.min.css">
+  <style>
+body {
+  background: #eee !important;
+}
+
+.wrapper {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 30px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 35px;
+
+}
+#label_error{
+  color: red;
+  display: none;
+  position: absolute;
+  left: 35px;
+  top: 148px;
+}
+input[type="submit"]{
+  width:120px;
+  height: 40px;
+  background: #222;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+}
+
+
+      
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <form class="form-signin" method="post" action="">
+      <h2 class="form-signin-heading">微信公众号配置</h2>
+      <input type="password" class="form-control" name="app_secret" placeholder="输入 app secret"/>
+      <input type="submit" value="开始管理" name='action' />
+      <label id="label_error" class="ERROR">app secret输入错误</label>
+    </form>
+  </div>
+</body>
+</html>

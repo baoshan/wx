@@ -1,0 +1,10 @@
+lib
+node_modules
+package
+demo/wx_secret.coffee
+*.tgz
+*.un~
+*.swp
+*.swo
+*.log
+.DS_Store
