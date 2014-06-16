@@ -396,7 +396,7 @@ $('#登录二维码').scan (user) ->
 
 ```
     <script src="/wx/wx.js"></script>     
-    <img src="/wx/qrcode/fruits?name=cheery" />
+    <img src="/wx/qrcode/fruits?name=cherry" />
 ```
 *`wx`自动为被扫描的二维码增加`scanned`类名。
 
