@@ -326,39 +326,19 @@ wx.click '点击按钮', (req, res) ->
 
 ##  编辑按钮
 
-编辑菜单是一种内容创意，应当由`markdown`来完成。使用`wx`，你可以立即预览菜单效果，无需关注更多。安装`wx`后，可以通过`http://server.address/wx/admin`地址进入管理界面
+编辑菜单是一种内容创意，应当由`markdown`来完成。使用`wx`，你可以立即预览菜单效果，无需关注更多。安装`wx`后，可以通过`http://server.address/wx/admin`地址进入管理界面.
+
+通过以下Markdown格式的文件可以编辑并实时预览按钮。
 
 ```
-[
-  {
-    "type": "click",
-    "name": "点击按钮",
-    "key": "点击按钮"
-  },
-  {
-    "type": "view",
-    "name": "链接文档",
-    "url": "http://mp.weixin.qq.com/wiki"
-  },
-  {
-    "type": "click",
-    "name": "二级菜单",
-    "key": "二级菜单",
-    "sub_button": [
-      {
-        "type": "view",
-        "name": "链接跳转",
-        "url": "http://github.com/baoshan/wx"
-      },
-      {
-        "type": "click",
-        "name": "拉取信息",
-        "key": "拉取信息"
-      }
-    ]
-  }
-]
++ 点击按钮 
++ [链接文档](http://mp.weixin.qq.com/wiki) 
++ 二级菜单
+   - [链接跳转](http://github.com/baoshan/wx)
+   - 拉取信息
 ```
+
+
 
 ##  扫描二维码登录
 **服务器端**

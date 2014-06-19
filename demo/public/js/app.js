@@ -43,7 +43,6 @@
       }, 400);
     });
     $('#qrcode_home').scan(function() {
-      console.log('home');
       return setTimeout(function() {
         return $('body, html').animate({
           scrollTop: $('#div_home').height()
@@ -74,7 +73,6 @@
     template_buttons = $('#template_div_buttons').html();
     (sync_buttons = function() {
       var json;
-      console.log(Mustache.render(template_buttons, markdown_2_json($('#textarea_markdown').val())));
       json = markdown_2_json($('#textarea_markdown').val());
       $('#div_buttons').html(Mustache.render(template_buttons, json));
       return $('#div_edit_button_demo_code code').html(JSON.stringify(json, null, '  '));
