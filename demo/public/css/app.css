@@ -443,10 +443,32 @@ span.note:before{
   left:0px; 
 }
 
+#div_home .try{
+  opacity:1;
+}
+
 #div_home.scrolled_to .try{
   opacity:1;
   left:0px;
+   -webkit-animation: home_try 0.3s ease;
 }
+@-webkit-keyframes home_try{
+  0% {
+      opacity:0;
+      left:-50px;
+  }
+  
+   80% {
+      opacity:0;
+      left:-50px;
+  }
+    
+  100% {
+      opacity:1;
+      left:0;
+  } 
+}
+
 
 
 
