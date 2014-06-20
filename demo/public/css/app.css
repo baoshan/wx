@@ -412,10 +412,6 @@ span.note:before{
 
 
 
-
-
-
-
 /*试一试*/
 .try {
   background:url(http://cdn.wedocare.com/img/home/home_try_it.png) no-repeat;
@@ -424,16 +420,30 @@ span.note:before{
   left:-50px;
   height:37px;
   width:132px;
+}
+
+.page:not(#div_home) .try{
   opacity:0;
-   transition:left,opacity, 0.3s ease 1.6s;
+}
+.page:not(#div_home):not(#div_message) .try{
+  transition:left,opacity, 0.3s ease 1.6s;
   -ms-transition:left,opacity, 0.3s ease 1.6s;
   -webkit-transition:left,opacity, 0.3s ease 1.6s;
   -moz-transition:left,opacity, 0.3s ease 1.6s;
   -o-transition:left,opacity, 0.3s ease 1.6s;
 }
+
 :not(#div_home).scrolled_to .try{
   opacity:1;
   left:120px;
+}
+
+#div_message .try{
+   transition:left,opacity, 0.3s ease 5s;
+  -ms-transition:left,opacity, 0.3s ease 5s;
+  -webkit-transition:left,opacity, 0.3s ease 5s;
+  -moz-transition:left,opacity, 0.3s ease 5s;
+  -o-transition:left,opacity, 0.3s ease 5s;
 }
 
 #div_ad .try{
@@ -443,31 +453,96 @@ span.note:before{
   left:0px; 
 }
 
-#div_home .try{
-  opacity:1;
-}
-
 #div_home.scrolled_to .try{
-  opacity:1;
-  left:0px;
-   -webkit-animation: home_try 0.3s ease;
+ left:0px;
+  animation: home_try 2s ease-out;
+  -ms-animation: home_try 2s ease-out;
+  -webkit-animation: home_try 2s ease-out;
+  -moz-animation: home_try 2s ease-out;
+  -o-animation: home_try 2s ease-out;
 }
-@-webkit-keyframes home_try{
+@keyframes home_try{
   0% {
-      opacity:0;
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
       left:-50px;
   }
-  
-   80% {
-      opacity:0;
-      left:-50px;
-  }
-    
   100% {
-      opacity:1;
       left:0;
   } 
 }
+@-ms-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-webkit-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-moz-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-o-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+
+
 
 
 
