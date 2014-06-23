@@ -70,6 +70,7 @@ html
     // 首页 
     div#div_home.page.scrolled_to
       div.header
+        div.try
         img#qrcode_home(continuous='', src='/wx/qrcode/home?rand=#{~~(1000 * Math.random())}')
         div
       div.middle
@@ -188,6 +189,7 @@ html
                   div.message.left
                     div.message_from(data-title='💻')
                     div.message_inner 你是谁，喵呜~
+                  div.try
                 
                 br
                 b 匹配正则表达式
@@ -239,6 +241,7 @@ html
                   
               // 手机
               div.message_phone.tab-content(data-message-title='会话')
+                div.try
                 div.div_other_img.tab-pane.fade.in.active 
                   div.message.right
                     div.message_from(data-title='👦')
@@ -359,6 +362,7 @@ html
                   
               // 手机
               div.message_phone.tab-content(data-message-title='会话')
+                div.try
                 div.div_text.tab-pane.fade.in.active 
                   div.message.right
                     div.message_from(data-title='👦')
@@ -664,7 +668,8 @@ html
               br
               p.note 建议为所有二维码指定名称进行分类，见临时二维码与永久二维码部分。
               // 手机
-              div.message_phone.tab-content(data-message-title='扫一扫')    
+              div.message_phone.tab-content(data-message-title='扫一扫')
+                div.try
                 div.login_pic 
                   img(id='登录二维码', src='/wx/qrcode?from=网页&rand=#{~~(1000 * Math.random())}')
                   // img(id='登录二维码', src='/wx/qrcode?rand=#{~~(1000 * Math.random())}' data-title='title')
@@ -727,6 +732,7 @@ html
                 code
                   :escape=QRCODE_CLIENT_PERMANENT
               div.ad_pic
+                div.try
                 div#div_portraits
                   div#div_headimgs
                     each subscriber in subscribers

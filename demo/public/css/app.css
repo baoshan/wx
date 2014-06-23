@@ -1,6 +1,6 @@
 html,
 body{
-  height: 100%;
+  height: 100%; 
   min-height:738px;
   display: block;
   padding-top: 0;
@@ -412,12 +412,135 @@ span.note:before{
 
 
 
+/*试一试*/
+.try {
+  background:url(http://cdn.wedocare.com/img/home/home_try_it.png) no-repeat;
+  position:absolute;
+  top:-50px;
+  left:-50px;
+  height:37px;
+  width:132px;
+}
 
+.page:not(#div_home) .try{
+  opacity:0;
+}
+.page:not(#div_home):not(#div_message) .try{
+  transition:left,opacity, 0.3s ease 1.6s;
+  -ms-transition:left,opacity, 0.3s ease 1.6s;
+  -webkit-transition:left,opacity, 0.3s ease 1.6s;
+  -moz-transition:left,opacity, 0.3s ease 1.6s;
+  -o-transition:left,opacity, 0.3s ease 1.6s;
+}
 
+:not(#div_home).scrolled_to .try{
+  opacity:1;
+  left:120px;
+}
 
+#div_message .try{
+   transition:left,opacity, 0.3s ease 5s;
+  -ms-transition:left,opacity, 0.3s ease 5s;
+  -webkit-transition:left,opacity, 0.3s ease 5s;
+  -moz-transition:left,opacity, 0.3s ease 5s;
+  -o-transition:left,opacity, 0.3s ease 5s;
+}
 
+#div_ad .try{
+  top:200px;
+}
+#div_ad.scrolled_to .try{
+  left:0px; 
+}
 
-
+#div_home.scrolled_to .try{
+ left:0px;
+  animation: home_try 2s ease-out;
+  -ms-animation: home_try 2s ease-out;
+  -webkit-animation: home_try 2s ease-out;
+  -moz-animation: home_try 2s ease-out;
+  -o-animation: home_try 2s ease-out;
+}
+@keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-ms-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-webkit-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-moz-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
+@-o-keyframes home_try{
+  0% {
+      left:-50px;
+      background: none;
+  }
+ 90% {
+      left:-50px;
+       background: none;
+  }
+  91% {
+      left:-50px;
+  }
+  100% {
+      left:0;
+  } 
+}
 
 
 
@@ -503,7 +626,7 @@ span.note:before{
   bottom: 35px;
   right: 42px;
 }
-#div_home .header div{
+#div_home .header img + div{
   width: 110px;
   height: 61px;
   margin-top: 20px;
@@ -2194,7 +2317,7 @@ span.note:before{
     background:url('http://cdn.wedocare.com/img/home/home_title_en@2x.png') no-repeat;
     background-size:auto 45px;
   }
-
+  
   /* 微信应用框架 */
   .home_title_2{
     background:url('http://cdn.wedocare.com/img/home/home_title_cn@2x.png') no-repeat;
@@ -2205,9 +2328,14 @@ span.note:before{
     background:url('http://cdn.wedocare.com/img/home/github_logo@2x.png') no-repeat;
     background-size: auto 27px;
   }
+  
+  .try {
+    background:url(http://cdn.wedocare.com/img/home/home_try_it@2x.png) no-repeat;
+    background-size: auto 37px;
+  } 
     
   /* 扫一扫关注我们 */
-  #div_home .header div{
+  #div_home .header img + div{
     background: url('http://cdn.wedocare.com/img/home/home_call_to_action@2x.png') no-repeat left;
     background-size: auto 61px;
   }
