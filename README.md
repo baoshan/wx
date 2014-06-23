@@ -7,7 +7,7 @@
 `wx`是极简设计的微信（公共平台）应用参考级框架，而并非微信接口在`node.js`下的幂等映射。
 
 
-[WeiXin]: http://182.92.129.185/
+[WeiXin]: http://weixinjs.org/
 
 
 ## 安装
