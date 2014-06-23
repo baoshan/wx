@@ -414,7 +414,7 @@ span.note:before{
 
 /*试一试*/
 .try {
-  background:url(http://cdn.wedocare.com/img/home/home_try_it.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/home/home_try_it.png) no-repeat;
   position:absolute;
   top:-50px;
   left:-50px;
@@ -630,7 +630,7 @@ span.note:before{
   width: 110px;
   height: 61px;
   margin-top: 20px;
-  background: url('http://cdn.wedocare.com/img/home/home_call_to_action.png') no-repeat left;
+  background: url('http://cdn.weixinjs.org/img/home/home_call_to_action.png') no-repeat left;
 }
 
 #div_home .header #qrcode_home{
@@ -639,7 +639,7 @@ span.note:before{
   float: right;
 }
 #div_home .header #qrcode_home.scanned + div{
-  background: url('http://cdn.wedocare.com/img/home/home_call_to_action.png')  no-repeat right;
+  background: url('http://cdn.weixinjs.org/img/home/home_call_to_action.png')  no-repeat right;
 }
 
 #div_home .gutter{
@@ -647,14 +647,14 @@ span.note:before{
 }
 
 .home_title{
-  background:url('http://cdn.wedocare.com/img/home/home_title_en.png');
+  background:url('http://cdn.weixinjs.org/img/home/home_title_en.png');
   margin-bottom: 0;
 }
 .home_title + p{
   font-family: 'AppleGothic','Helvetica','Segoe UI light','Arial','黑体';
 }
 .home_title_2{
-  background:url('http://cdn.wedocare.com/img/home/home_title_cn.png');
+  background:url('http://cdn.weixinjs.org/img/home/home_title_cn.png');
 }
 
 .bottom{
@@ -676,7 +676,7 @@ span.note:before{
   width:112px;
   height:27px;
   margin-right:20px;
-  background:url('http://cdn.wedocare.com/img/home/github_logo.png') no-repeat;
+  background:url('http://cdn.weixinjs.org/img/home/github_logo.png') no-repeat;
   opacity:0.9;
   cursor:pointer;
   transititon:opacity 0.3s ease 0;
@@ -731,7 +731,7 @@ span.note:before{
   margin-left: 40px;
 }
 .install_title{
-  background:url('http://cdn.wedocare.com/img/install/install_title.png') no-repeat;
+  background:url('http://cdn.weixinjs.org/img/install/install_title.png') no-repeat;
 }
 
 #div_install .col-md-4{
@@ -788,7 +788,7 @@ span.note:before{
   padding-bottom:370px;
   margin-top: 75px;
   margin-bottom: 22px;
-  background:url(http://cdn.wedocare.com/img/install/install_server.png) no-repeat 15px bottom;
+  background:url(http://cdn.weixinjs.org/img/install/install_server.png) no-repeat 15px bottom;
 }
 
 .install_pic a.mp{
@@ -848,7 +848,7 @@ span.note:before{
 }
 
 .message_title{
-  background:url(http://cdn.wedocare.com/img/message/message_title.png);
+  background:url(http://cdn.weixinjs.org/img/message/message_title.png);
 }
 
 #message_content{
@@ -912,7 +912,7 @@ span.note:before{
   left:-500px;
   width:385px;
   height:800px;
-  background:url(http://cdn.wedocare.com/img/message/message_iphone.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/message/message_iphone.png) no-repeat;
 }
 .message_phone:before{
   content: attr(data-message-title);
@@ -949,7 +949,7 @@ span.note:before{
 }
 
 #div_other_message h1{
-  background:url(http://cdn.wedocare.com/img/message_all/message_all_title.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/message_all/message_all_title.png) no-repeat;
 }
 
 
@@ -995,7 +995,7 @@ span.note:before{
 .other_message_nav li a{
   width: 45px;
   height: 70px;
-  background:url(http://cdn.wedocare.com/img/message_all/message_all_icon.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/message_all/message_all_icon.png) no-repeat;
 }
 
 
@@ -1061,7 +1061,7 @@ span.note:before{
 .div_other_img .message_inner{
   width: 144px;
   height: 144px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image.png);
   background-repeat: no-repeat;
 }
 .div_other_img .right .message_inner{
@@ -1073,7 +1073,7 @@ span.note:before{
   color: rgba(0,0,0,0);
 }
 .div_other_voice .left .message_inner{
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice.png);
   background-repeat: no-repeat;
 }
 .div_other_voice .right .message_inner:after{
@@ -1085,7 +1085,7 @@ span.note:before{
   position: absolute;
   top: 5px;
   left: 25px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice.png);
   background-repeat: no-repeat;
   transform:rotate(180deg);
   -ms-transform:rotate(180deg);
@@ -1098,7 +1098,7 @@ span.note:before{
 .div_other_video .right .message_inner{
   width: 146px;
   height: 111px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_video.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_video.png);
 }
 .div_other_video .right .message_inner{
   background-color: rgb(18, 168, 168);
@@ -1108,14 +1108,14 @@ span.note:before{
 .div_other_location .right .message_inner{
   width: 144px;
   height: 144px;
-  background-image: url(http://cdn.wedocare.com/img/message_all/message_all_location.png);
+  background-image: url(http://cdn.weixinjs.org/img/message_all/message_all_location.png);
 }
 
 /* 链接 */
 .div_other_link .right .message_inner {
   height:106px;
   width:144px;
-  background-image:url(http://cdn.wedocare.com/img/message_all/message_all_link.png);
+  background-image:url(http://cdn.weixinjs.org/img/message_all/message_all_link.png);
 }
 
 
@@ -1168,7 +1168,7 @@ span.note:before{
 
 #div_send_message h1.gutter{
   margin-bottom:40px;
-  background:url(http://cdn.wedocare.com/img/send_message/send_message_title.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/send_message/send_message_title.png) no-repeat;
 }
 
 .send_message_nav li + li{
@@ -1211,7 +1211,7 @@ span.note:before{
 .send_message_nav li a{
   width: 45px;
   height: 70px;
-  background:url(http://cdn.wedocare.com/img/send_message/send_message_icon.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/send_message/send_message_icon.png) no-repeat;
 }
 
 /* 发文本 */
@@ -1292,7 +1292,7 @@ span.note:before{
 .div_img .message_inner{
   width: 144px;
   height: 144px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image.png);
   background-repeat: no-repeat;
 }
 .div_img .right .message_inner{
@@ -1304,7 +1304,7 @@ span.note:before{
   color: rgba(0,0,0,0);
 }
 .div_voice .left .message_inner{
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice.png);
   background-repeat: no-repeat;
 }
 .div_voice .right .message_inner:after{
@@ -1316,7 +1316,7 @@ span.note:before{
   position: absolute;
   top: 5px;
   left: 25px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice.png);
   background-repeat: no-repeat;
   transform:rotate(180deg);
   -ms-transform:rotate(180deg);
@@ -1329,7 +1329,7 @@ span.note:before{
 .div_video .message_inner{
   width: 146px;
   height: 111px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_video.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_video.png);
 }
 .div_video .right .message_inner{
   background-color: rgb(18, 168, 168);
@@ -1339,14 +1339,14 @@ span.note:before{
 .div_music .left .message_inner{
   width: 146px;
   height: 58px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_music.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_music.png);
 }
 
 /* 图文 */
 .div_img_text .left .message_inner{
   width: 144px;
   height: 135px;
-  background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image_text.png);
+  background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image_text.png);
 }
 
 
@@ -1372,7 +1372,7 @@ span.note:before{
 }
 /*点击按钮标题*/
 .click_button_title {
-  background:url(http://cdn.wedocare.com/img/click_button/click_button_title.png);
+  background:url(http://cdn.weixinjs.org/img/click_button/click_button_title.png);
 }
 .text_title{
   margin-top:50px;
@@ -1384,7 +1384,7 @@ span.note:before{
 /*img 手机 */
 /* 入场前*/
 .click_button_iphone {
-  background:url(http://cdn.wedocare.com/img/click_button/click_button_iphone.png);
+  background:url(http://cdn.weixinjs.org/img/click_button/click_button_iphone.png);
   height:374px;
   width:528px;
   transform:translateX(200px);
@@ -1415,7 +1415,7 @@ span.note:before{
 /*img 手 */
 /* 入场前*/
 .click_button_hand{
-  background:url(http://cdn.wedocare.com/img/click_button/click_button_hand.png);
+  background:url(http://cdn.weixinjs.org/img/click_button/click_button_hand.png);
   position:relative;
   height:240px;
   width:386px;
@@ -1473,7 +1473,7 @@ span.note:before{
 }
 
 #div_edit_button h1{
-  background:url(http://cdn.wedocare.com/img/edit_button/edit_button_title.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/edit_button/edit_button_title.png) no-repeat;
 }
 
 
@@ -1571,7 +1571,7 @@ span.note:before{
   display: inline-block;
   width: 16px;
   height: 12px;
-  background: url(http://cdn.wedocare.com/img/edit_button/edit_button_icon.png) no-repeat 0 0px;
+  background: url(http://cdn.weixinjs.org/img/edit_button/edit_button_icon.png) no-repeat 0 0px;
   background-size: 12px;
 }
 
@@ -1755,7 +1755,7 @@ span.note:before{
 }
 /*标题：扫描二维码登录*/
 .login_title{
-  background:url(http://cdn.wedocare.com/img/scan_qrcode/scan_qrcode_title.png);
+  background:url(http://cdn.weixinjs.org/img/scan_qrcode/scan_qrcode_title.png);
 }
 
 #div_login .col-md-5 {
@@ -1787,7 +1787,7 @@ span.note:before{
 
 .login_pic label:before {
   content:"";
-  background:url(http://cdn.wedocare.com/img/scan_qrcode/scan_qrcode_tick.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/scan_qrcode/scan_qrcode_tick.png) no-repeat;
   position: absolute;
   top:-60px; 
   left:0; 
@@ -1867,7 +1867,7 @@ span.note:before{
 }
 /*标题：带参数二维码*/
 .fruit_title{
-  background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_title.png);
+  background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_title.png);
   margin-top:30px;
 }
 
@@ -1895,10 +1895,10 @@ span.note:before{
   width:325px;
 }
 .like_fruit_pic .apple{
-  background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_apple.png) no-repeat left;
+  background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_apple.png) no-repeat left;
 }
 .like_fruit_pic .cherry{
-  background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_cherry.png) no-repeat left;
+  background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_cherry.png) no-repeat left;
 }
 
 /*二维码扫描后隐藏*/
@@ -1907,10 +1907,10 @@ span.note:before{
 }
 /*二维码扫描后水果换图*/
 .like_fruit_pic img.scanned ~ .apple {
-  background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_apple.png) no-repeat right;
+  background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_apple.png) no-repeat right;
 }
 .like_fruit_pic img.scanned ~ .cherry {
-  background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_cherry.png) no-repeat right;
+  background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_cherry.png) no-repeat right;
 }
 
 
@@ -1925,7 +1925,7 @@ span.note:before{
 }
 /*标题：永久二维码*/
 .ad_title{
-  background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_title.png);
+  background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_title.png);
   margin-top:100px;
 }
 
@@ -1942,7 +1942,7 @@ span.note:before{
 
 /*灯箱*/
 #div_portraits {
-  background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_screen.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_screen.png) no-repeat;
   padding-top:20px;
   position:relative;
   top:250px;
@@ -2010,7 +2010,7 @@ span.note:before{
   width:calc(100% - 100px);
 }
 /*扫一扫与他们共同关注*/
-#div_portraits div:last-of-type .subscribe_title{ background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_scan_subscribe.png) no-repeat;
+#div_portraits div:last-of-type .subscribe_title{ background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_scan_subscribe.png) no-repeat;
   background-position:right bottom;
   color:rgba(0,0,0,0);
   float:left;
@@ -2042,7 +2042,7 @@ span.note:before{
 }
 
 #div_subscribe h1 {
-  background:url(http://cdn.wedocare.com/img/subscribe_unsubscribe/subscribe_unsubscribe.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/subscribe_unsubscribe/subscribe_unsubscribe.png) no-repeat;
 }
 
 #div_subscribe .message_phone{
@@ -2107,11 +2107,11 @@ span.note:before{
 }
 
 #div_subscribe_list h1 {
-  background:url(http://cdn.wedocare.com/img/subscriber_list/subscriber_list_title.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/subscriber_list/subscriber_list_title.png) no-repeat;
 }
 
 #div_subscribe_list h1.h1_more {
-  background:url(http://cdn.wedocare.com/img/subscriber_list/subscriber_list_moretime.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/subscriber_list/subscriber_list_moretime.png) no-repeat;
 }
 
 
@@ -2184,7 +2184,7 @@ span.note:before{
 }
 
 #div_fsm h1 {
-  background:url(http://cdn.wedocare.com/img/fsm/fsm_title.png) no-repeat;
+  background:url(http://cdn.weixinjs.org/img/fsm/fsm_title.png) no-repeat;
 }   
 
 #div_fsm .col-md-5{
@@ -2314,97 +2314,97 @@ span.note:before{
 (min-device-pixel-ratio: 2){
   /* WeiXin */
   .home_title{
-    background:url('http://cdn.wedocare.com/img/home/home_title_en@2x.png') no-repeat;
+    background:url('http://cdn.weixinjs.org/img/home/home_title_en@2x.png') no-repeat;
     background-size:auto 45px;
   }
   
   /* 微信应用框架 */
   .home_title_2{
-    background:url('http://cdn.wedocare.com/img/home/home_title_cn@2x.png') no-repeat;
+    background:url('http://cdn.weixinjs.org/img/home/home_title_cn@2x.png') no-repeat;
     background-size:auto 54px;
   }
 
   .bottom ul .github{
-    background:url('http://cdn.wedocare.com/img/home/github_logo@2x.png') no-repeat;
+    background:url('http://cdn.weixinjs.org/img/home/github_logo@2x.png') no-repeat;
     background-size: auto 27px;
   }
   
   .try {
-    background:url(http://cdn.wedocare.com/img/home/home_try_it@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/home/home_try_it@2x.png) no-repeat;
     background-size: auto 37px;
   } 
     
   /* 扫一扫关注我们 */
   #div_home .header img + div{
-    background: url('http://cdn.wedocare.com/img/home/home_call_to_action@2x.png') no-repeat left;
+    background: url('http://cdn.weixinjs.org/img/home/home_call_to_action@2x.png') no-repeat left;
     background-size: auto 61px;
   }
   #div_home .header #qrcode_home.scanned + div{
-    background: url('http://cdn.wedocare.com/img/home/home_call_to_action@2x.png') no-repeat right;
+    background: url('http://cdn.weixinjs.org/img/home/home_call_to_action@2x.png') no-repeat right;
     background-size: auto 61px;
   }
   /* 安装 title */
   .install_title{
-    background:url('http://cdn.wedocare.com/img/install/install_title@2x.png') no-repeat;
+    background:url('http://cdn.weixinjs.org/img/install/install_title@2x.png') no-repeat;
     background-size:auto 33px;
   }
   /* 安装步骤 */
   .install_pic{
-    background:url(http://cdn.wedocare.com/img/install/install_server@2x.png) no-repeat 15px bottom;
+    background:url(http://cdn.weixinjs.org/img/install/install_server@2x.png) no-repeat 15px bottom;
     background-size:auto 338px;
   }
 
   /* 接收消息 */
   .message_title{
-    background:url(http://cdn.wedocare.com/img/message/message_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/message/message_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
   .message_phone{
-    background:url(http://cdn.wedocare.com/img/message/message_iphone@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/message/message_iphone@2x.png) no-repeat;
     background-size:auto 800px;
   }
     
     
   /* 接收其他消息 */
   #div_other_message h1{
-    background:url(http://cdn.wedocare.com/img/message_all/message_all_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/message_all/message_all_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
     
   /* 接收其他消息：发送消息切换按钮 */
   .other_message_nav li a{
-    background:url(http://cdn.wedocare.com/img/message_all/message_all_icon@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/message_all/message_all_icon@2x.png) no-repeat;
     background-size: auto 171px;
   }
   
   /* 接收其他消息：图片 */
   .div_other_img .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image@2x.png);
     background-size:auto 136px;
   }
   /* 接收其他消息：语音 */
   .div_other_voice .left .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice@2x.png);
     background-size:auto 22px;
   }
   .div_other_voice .right .message_inner:after{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice@2x.png);
     background-size:auto 22px;
   }
   
   /* 接收其他消息：视频 */
   .div_other_video .right .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_video@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_video@2x.png);
     background-size:auto 103px;
   }
   /* 接收其他消息：地理位置 */
   .div_other_location .right .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/message_all/message_all_location@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/message_all/message_all_location@2x.png);
     background-size:auto 136px;
   }
    /* 接收其他消息：链接 */
   .div_other_link .right .message_inner {
-    background-image:url(http://cdn.wedocare.com/img/message_all/message_all_link@2x.png);
+    background-image:url(http://cdn.weixinjs.org/img/message_all/message_all_link@2x.png);
     background-size:auto 98px;
   }
   
@@ -2412,41 +2412,41 @@ span.note:before{
   
   /* 发送消息 */
   #div_send_message h1.gutter{
-    background:url(http://cdn.wedocare.com/img/send_message/send_message_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/send_message/send_message_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
     
 
   /* 图片 */
   .div_img .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image@2x.png);
     background-size:auto 136px;
   }
 
   /* 语音 */
   .div_voice .left .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice@2x.png);
     background-size:auto 22px;
   }
   .div_voice .right .message_inner:after{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_voice@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_voice@2x.png);
     background-size:auto 22px;
   }
 
   /* 视频 */
   .div_video .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_video@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_video@2x.png);
     background-size:auto 103px;
   }
   /* 音乐 */
   .div_music .left .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_music@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_music@2x.png);
     background-size:auto 50px;
   }
 
   /* 图文 */
   .div_img_text .left .message_inner{
-    background-image: url(http://cdn.wedocare.com/img/send_message/send_message_image_text@2x.png);
+    background-image: url(http://cdn.weixinjs.org/img/send_message/send_message_image_text@2x.png);
     background-size:auto 127px;
   }
 
@@ -2457,28 +2457,28 @@ span.note:before{
   /* 发送消息切换按钮 */
   /******************/
   .send_message_nav li a{
-    background:url(http://cdn.wedocare.com/img/send_message/send_message_icon@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/send_message/send_message_icon@2x.png) no-repeat;
     background-size: 444px 171px;
   }
 
   /*点击按钮 */
   .click_button_title{
-    background:url(http://cdn.wedocare.com/img/click_button/click_button_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/click_button/click_button_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
   .click_button_hand{
-    background:url(http://cdn.wedocare.com/img/click_button/click_button_hand@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/click_button/click_button_hand@2x.png) no-repeat;
     background-size:auto 240px;
   }
 
   .click_button_iphone {
-    background:url(http://cdn.wedocare.com/img/click_button/click_button_iphone@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/click_button/click_button_iphone@2x.png) no-repeat;
     background-size:auto 374px;
   }
     
   /*按钮组*/
   #div_buttons a.option_icon:before{
-    background: url(http://cdn.wedocare.com/img/edit_button/edit_button_icon@2x.png) no-repeat 0 0px;
+    background: url(http://cdn.weixinjs.org/img/edit_button/edit_button_icon@2x.png) no-repeat 0 0px;
     background-size:auto 12px;
   }
 
@@ -2486,80 +2486,80 @@ span.note:before{
     
   /* 扫描二维码登录 */
   .login_title{
-    background:url(http://cdn.wedocare.com/img/scan_qrcode/scan_qrcode_title@2x.png);
+    background:url(http://cdn.weixinjs.org/img/scan_qrcode/scan_qrcode_title@2x.png);
     background-size:auto 33px;
   }
   .login_pic label:before {
-    background:url(http://cdn.wedocare.com/img/scan_qrcode/scan_qrcode_tick@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/scan_qrcode/scan_qrcode_tick@2x.png) no-repeat;
     background-size:auto 45px;
   }
      
   #div_edit_button h1{
-    background:url(http://cdn.wedocare.com/img/edit_button/edit_button_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/edit_button/edit_button_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
     
   /*选择喜欢的水果 */
   .fruit_title{
-    background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
   .like_fruit_pic .apple{
-    background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_apple@2x.png) no-repeat left;
+    background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_apple@2x.png) no-repeat left;
     background-size:auto 325px;
   }
   .like_fruit_pic .cherry{
-    background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_cherry@2x.png) no-repeat left;
+    background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_cherry@2x.png) no-repeat left;
     background-size:auto 325px;
   }
   .like_fruit_pic img.scanned ~ .apple {
-    background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_apple@2x.png) no-repeat right;
+    background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_apple@2x.png) no-repeat right;
     background-size:auto 325px;
   }
   .like_fruit_pic img.scanned ~ .cherry {
-    background:url(http://cdn.wedocare.com/img/temporary_qrcode/temporary_qrcode_cherry@2x.png) no-repeat right;
+    background:url(http://cdn.weixinjs.org/img/temporary_qrcode/temporary_qrcode_cherry@2x.png) no-repeat right;
     background-size:auto 325px;
   }
     
   /* 广告投放效果 */
   .ad_title {
-    background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_title@2x.png) no-repeat;
     background-size: auto 33px;
   }
    #div_portraits {
-    background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_screen@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_screen@2x.png) no-repeat;
     background-size:auto 1000px;
   }
     
   /*扫一扫与他们共同关注*/
   #div_portraits div:last-of-type .subscribe_title{
-    background:url(http://cdn.wedocare.com/img/permanent_qrcode/permanent_qrcode_scan_subscribe@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/permanent_qrcode/permanent_qrcode_scan_subscribe@2x.png) no-repeat;
     background-size:auto 43px;
     background-position:right bottom;
   }
     
   /* 关注与取消关注 */
   #div_subscribe h1 {
-    background:url(http://cdn.wedocare.com/img/subscribe_unsubscribe/subscribe_unsubscribe@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/subscribe_unsubscribe/subscribe_unsubscribe@2x.png) no-repeat;
     background-size:auto 33px;
   }
 
 
   /* 获取关注着列表 */
   #div_subscribe_list h1 {
-    background:url(http://cdn.wedocare.com/img/subscriber_list/subscriber_list_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/subscriber_list/subscriber_list_title@2x.png) no-repeat;
     background-size:auto 33px;
   }
 
   #div_subscribe_list h1.h1_more {
-    background:url(http://cdn.wedocare.com/img/subscriber_list/subscriber_list_moretime@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/subscriber_list/subscriber_list_moretime@2x.png) no-repeat;
     background-size:auto 33px;
   }
 
 
     /* 有限状态机 */
   #div_fsm h1 {
-    background:url(http://cdn.wedocare.com/img/fsm/fsm_title@2x.png) no-repeat;
+    background:url(http://cdn.weixinjs.org/img/fsm/fsm_title@2x.png) no-repeat;
     background-size:auto 33px;
   }   
 
