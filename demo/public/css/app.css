@@ -1922,6 +1922,7 @@ span.note:before{
 
 #div_ad .gutter{
   margin-bottom:50px;
+  display:block !important;
 }
 /*标题：永久二维码*/
 .ad_title{
@@ -1929,12 +1930,12 @@ span.note:before{
   margin-top:100px;
 }
 
-
 #div_ad .col-md-6{
   position:relative;
   width: 610px;
 }
 #div_ad .ad_pic{
+  display:block !important;
   position:absolute;
   right:-420px;
   top:-70px;
