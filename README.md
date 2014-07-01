@@ -38,10 +38,6 @@
      token      : 'xxx-xx-xx'
      app_id     : 'xx-xxx'
      app_secret : 'xxxxxxxxxxxx'
-     redis_options :
-       host     : 'redis.example.com'
-       port     : '6379'
-       options  : auth_pass: 'password'
    app.use '/wx', wx
    ```
 4.  启动应用程序后，修改微信开发模式中服务器配置为：`http://server.address/wx`，且有与程序相一致的`token`。
