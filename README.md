@@ -32,7 +32,7 @@
       
 3. 服务器端
 
-  ```
+  ```coffeescript
    app = express()    
    wx  = new require 'wx'
      token      : 'xxx-xx-xx'
