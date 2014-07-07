@@ -121,8 +121,8 @@ else
     music =
       title        : '音乐标题'
       description  : '音乐描述'
-      music_url    : 'http://182.92.129.185/music.mp3'
-      hq_music_url : 'http://182.92.129.185/music.mp3'
+      music_url    : 'http://weixinjs.org/music.mp3'
+      hq_music_url : 'http://weixinjs.org/music.mp3'
       thumb_media  : 'cover.jpg'
     res.music music
 
