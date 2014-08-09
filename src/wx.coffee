@@ -62,9 +62,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 点击各个按钮的处理句柄；
   # + 扫描不同二维码处理句柄；
   # + 响应不同文字消息的句柄。
-  @click_handlers = {}
-  @scan_handlers  = {}
-  @text_handlers  = []
+  click_handlers = {}
+  scan_handlers  = {}
+  text_handlers  = []
 
   # ### 二维码参数
   #
@@ -112,7 +112,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         [req, res] = dt_res
 
         # 服务器端已定义处理句柄时：
-        if scan_handler = @scan_handlers[name]
+        if scan_handler = scan_handlers[name]
 
           # + 用原始扫码消息增补请求对象。
           # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -401,7 +401,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
               # 永久二维码直接在微信响应进程处理。
               if name is qrcode_permanent_channel
-                if scan_handler = @scan_handlers[name]
+                if scan_handler = scan_handlers[name]
 
                     # + 用原始扫码消息增补请求对象。
                     # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -438,12 +438,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                   # + 服务器端已注册处理句柄时，缓存微信端的请求。
                   # + 服务器端未注册处理句柄时，向微信端响应`OK`。
-                  if @scan_handlers[name] then unsent_mb_responses[id] = res
+                  if scan_handlers[name] then unsent_mb_responses[id] = res
                   else res.ok()
 
                 # 无桌面端关注时，如已注册处理句柄，
                 # 将二维码的查询参数增补至请求对象查询参数中，在当前进程内处理。
-                else if scan_handler = @scan_handlers[name]
+                else if scan_handler = scan_handlers[name]
                   _(req.query).extend(query)
                   scan_handler(req, res, ->)
 
@@ -473,7 +473,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
             # 收到文本消息时，如注册了文本处理句柄，使用该句柄处理，否则响应`200`。
             when 'text'
-              for [pattern, text_handler] in @text_handlers
+              for [pattern, text_handler] in text_handlers
                 if (typeof pattern is 'string' and message.content.trim() is pattern) or (typeof pattern is 'object' and match = message.content.match(pattern))
                   _(req.params).extend(match)
                   text_handler(req, res)
@@ -518,7 +518,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     #
                     #   1. 使用订阅流程处理；
                     #   2. 向桌面端发送用户。
-                    if @scan_handlers[name]
+                    if scan_handlers[name]
                       scan [session, name, query]
 
                     # 未定义对应扫码处理流程时：
@@ -539,7 +539,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 收到点击按钮消息时，
                 when 'click'
-                  if click_handler = @click_handlers[req.event_key]
+                  if click_handler = click_handlers[req.event_key]
                     click_handler(req, res)
                   else res.ok()
 
@@ -868,7 +868,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       if typeof pattern in ['function']
         handler = pattern
         pattern = /.*/
-      @text_handlers.push [pattern, handler]
+      text_handlers.push [pattern, handler]
       @
 
     # ### 注册图片消息处理句柄
@@ -892,7 +892,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
     # ### 注册点击菜单按钮处理句柄
     click: (key, handler) =>
-      @click_handlers[key] = handler
+      click_handlers[key] = handler
       @
 
     # ### 注册二维码处理句柄
@@ -900,7 +900,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       if typeof channel is 'function'
         handler = channel
         channel = ''
-      @scan_handlers[channel.toLowerCase()] = handler
+      scan_handlers[channel.toLowerCase()] = handler
       @
 
     # ### 检索用户基本信息
