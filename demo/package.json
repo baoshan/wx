@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "coffee ./bin/www"
+    "start": "coffee ./app.coffee"
   },
   "dependencies": {
     "express": "~4.2.0",
