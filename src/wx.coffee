@@ -610,7 +610,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         @send message "<MsgType><![CDATA[image]]></MsgType>
           <Image><MediaId><![CDATA[#{image}]]></MediaId></Image>"
 
-      if image.match(regex_media_id)
+      if typeof image == 'string' and image.match(regex_media_id)
         send image
       else
         wx.upload 'image', image, (err, res) =>
