@@ -47,7 +47,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   #
   # + 消息订阅专用客户端。
   # + 其余通用操作客户端；
-  {port, host, options} = redis_options ? {}
+  {port, host, options} = redis_options ? {port: null, host: null, options: null}
   redis_pubsub = redis.createClient port, host, options
   redis_client = redis.createClient port, host, options
 
@@ -923,14 +923,23 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     #
     # 直接调用`curl`命令，完成文件上传。
     upload: (type, media, callback = ->) =>
-      exec "curl -F media=@#{media} \"#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}\"", (err, res) ->
+      #exec "curl -F media=@#{media} \"#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}\"", (err, res) ->
+      #  return callback err if err
+      #  try
+      #    res = JSON.parse res
+      #  catch err
+      #    return callback err
+      #  return callback res if res.errcode
+      #  callback null, res
+      r = request.post 
+        url      : "#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}"
+        json     : true
+      , (err, res) ->
         return callback err if err
-        try
-          res = JSON.parse res
-        catch err
-          return callback err
-        return callback res if res.errcode
-        callback null, res
+        callback null, res.body
+      form = r.form()
+      form.append('media', if typeof media == 'string' then fs.createReadStream(media) else media)
+      form.append('hack', '')
       @
 
     # ### 文件下载
