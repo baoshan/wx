@@ -726,7 +726,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             image   : media_id: image
         , wrap callback
 
-      if typeof image == 'string' && image.match(regex_media_id)
+      if typeof image == 'string' and image.match(regex_media_id)
         send image
       else
         wx.upload 'image', image, (err, res) ->
@@ -933,14 +933,14 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       #  callback null, res
       r = request.post 
         url      : "#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}"
-        json     : true
+        json     : on
       , (err, res) ->
         return callback err if err
         callback null, res.body
       form = r.form()
-      form.append('media', if typeof media == 'string' then fs.createReadStream(media) else media)
+      form.append 'media', if typeof media == 'string' then fs.createReadStream(media) else media
       # HACK: send an extra '\r\n' to end the media data.
-      form.append('hack', '')
+      form.append 'hack', ''
       @
 
     # ### 文件下载
