@@ -726,7 +726,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             image   : media_id: image
         , wrap callback
 
-      if image.match(regex_media_id)
+      if typeof image == 'string' && image.match(regex_media_id)
         send image
       else
         wx.upload 'image', image, (err, res) ->
