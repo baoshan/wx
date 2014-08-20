@@ -939,6 +939,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         callback null, res.body
       form = r.form()
       form.append('media', if typeof media == 'string' then fs.createReadStream(media) else media)
+      # HACK: send an extra '\r\n' to end the media data.
       form.append('hack', '')
       @
 
