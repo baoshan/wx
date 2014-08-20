@@ -5,6 +5,7 @@
   "main": "lib/wx.js",
   "dependencies": {
     "raw-body": "~1.1.4",
+    "form-data": "*",
     "underscore.string": "~2.3.3",
     "xml2js": "~0.4.2",
     "underscore": "~1.6.0",
