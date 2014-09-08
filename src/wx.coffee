@@ -818,7 +818,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             url         : url
       , wrap callback
 
-    template: ({id: template_id, topcolor: topcolor, url: url, data: data}, callback) ->
+    template: ({template_id, topcolor, url, data}, callback) ->
       request
         method : 'POST'
         url    : "#{api_common}/message/template/send?access_token=#{access_token}"
