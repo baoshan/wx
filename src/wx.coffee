@@ -82,7 +82,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 未响应的微信请求。
   unsent_dt_responses = {}
   unsent_mb_responses = {}
-  
+
   # ### `REDIS`订阅：
   #
   # + `WX:ACCESS_TOKEN`：访问令牌自动更新事件；
@@ -397,7 +397,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             process_scan = ->
               id = JSON.stringify [session, name, query]
 
-              # 
+              #
 
               # 永久二维码直接在微信响应进程处理。
               if name is qrcode_permanent_channel
@@ -545,7 +545,13 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 如为二维码扫描事件，
                 when 'scan' then scan()
-                
+
+                when 'templatesendjobfinish'
+                  if @template_handler
+                    req.message = message
+                    @template_handler(req, res)
+                  else res.ok()
+
                 # 尚无法处理的事件，直接响应`200`。
                 else res.ok()
 
@@ -569,7 +575,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 模拟被动回复（桌面端伺服进程发起）
   # + 真实被动回复（微信端伺服进程发起）
   reply = (req, id) ->
-  
+
     # ### 模拟被动回复
     #
     # 通过`REDIS`中继，由桌面端伺服进程，模拟向微信同步回复消息。
@@ -583,7 +589,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             content : content
         memo
       , {}
-  
+
     # ### 真实被动回复
     #
     # 消息通用部分：
@@ -598,7 +604,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
       #{message}
       </xml>"
-  
+
     # ### 回复文本
     text: (text) ->
       @send message "<MsgType><![CDATA[text]]></MsgType>
@@ -632,7 +638,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         wx.upload 'voice', voice, (err, res) =>
           return @send 500 unless voice = res?.media_id
           send voice
-    
+
     # ### 回复视频
     video: (video) ->
       send = ({video, title, description}) =>
@@ -668,26 +674,26 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         wx.upload 'thumb', music.thumb_media, (err, res) =>
           return @send 500 unless music.thumb_media = res?.thumb_media_id
           send music
-  
+
     # 新闻类型另含：
     #
     # + 消息类型；
     # + 新闻条数；
     # + 新闻内容。
     news: (articles) ->
-  
+
       articles = [].concat(articles).map ({title, description, pic_url, url}) ->
         "<item>
-        <Title><![CDATA[#{title}]]></Title> 
+        <Title><![CDATA[#{title}]]></Title>
         <Description><![CDATA[#{description}]]></Description>
         <PicUrl><![CDATA[#{pic_url}]]></PicUrl>
         <Url><![CDATA[#{url}]]></Url>
         </item>"
-      
+
       @send message "<MsgType><![CDATA[news]]></MsgType>
         <ArticleCount>#{articles.length}</ArticleCount>
         <Articles>#{articles.join('')}</Articles>"
-  
+
     # 转移客服接口
     transfer: ->
       @send message "<MsgType><![CDATA[transfer_customer_service]]></MsgType>"
@@ -812,6 +818,18 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             url         : url
       , wrap callback
 
+    template: ({template_id, topcolor, url, data}, callback) ->
+      request
+        method : 'POST'
+        url    : "#{api_common}/message/template/send?access_token=#{access_token}"
+        json   :
+          touser      : @openid
+          template_id : template_id
+          url         : url
+          topcolor    : topcolor or '#FF0000'
+          data        : data
+      , wrap callback
+
   # ### 与反`REST`设计战斗
   wrap = (callback = ->) ->
     (err, res) ->
@@ -870,6 +888,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         pattern = /.*/
       text_handlers.push [pattern, handler]
       @
+
+    # ### 注册模板消息处理句柄
+    template: (@template_handler) => @
 
     # ### 注册图片消息处理句柄
     image: (@image_handler) => @
