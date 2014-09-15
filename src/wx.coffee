@@ -881,6 +881,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # ### 注册消息处理句柄
   _.extend router,
 
+    # ### 向合理使用场景暴露访问口令
+    access_token: -> access_token
+
     # ### 注册文本消息处理句柄
     text: (pattern, handler) =>
       if typeof pattern in ['function']
