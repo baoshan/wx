@@ -546,9 +546,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 # 如为二维码扫描事件，
                 when 'scan' then scan()
 
+                # 模板消息发送成功时，
                 when 'templatesendjobfinish'
                   if @template_handler
-                    req.message = message
                     @template_handler(req, res)
                   else res.ok()
 
@@ -892,9 +892,6 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       text_handlers.push [pattern, handler]
       @
 
-    # ### 注册模板消息处理句柄
-    template: (@template_handler) => @
-
     # ### 注册图片消息处理句柄
     image: (@image_handler) => @
 
@@ -913,6 +910,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # ### 注册关注与取消关注处理句柄
     subscribe   : (@subscribe_handler) => @
     unsubscribe : (@unsubscribe_handler) => @
+
+    # ### 注册模板消息处理句柄
+    templatesendjobfinish: (@templatesendjobfinish_handler) => @
 
     # ### 注册点击菜单按钮处理句柄
     click: (key, handler) =>
