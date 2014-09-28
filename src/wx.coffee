@@ -111,6 +111,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         [session, name, query] = JSON.parse message.id
         [req, res] = dt_res
 
+        # 允许跨域请求。
+        res.header 'Access-Control-Allow-Origin', req.headers.origin
+        res.header 'Access-Control-Allow-Credentials', on
+
         # 服务器端已定义处理句柄时：
         if scan_handler = scan_handlers[name]
 
@@ -155,8 +159,15 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         [session, name, query] = JSON.parse message.id
         if name is qrcode_permanent_channel
           for [req, res] in dt_res
+            # 允许跨域请求。
+            res.header 'Access-Control-Allow-Origin', req.headers.origin
+            res.header 'Access-Control-Allow-Credentials', on
             res.send message.content
-        else dt_res[1].send message.content
+        else
+          # 允许跨域请求。
+          dt_res[1].header 'Access-Control-Allow-Origin', dt_res[0].headers.origin
+          dt_res[1].header 'Access-Control-Allow-Credentials', on
+          dt_res[1].send message.content
 
   # ### 创建路由器
   wx = router = express.Router()
@@ -209,7 +220,6 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # + 会话
     # + 名称
     # + 查询
-    session = req.session.id
     name    = (req.params.name ? '').toLowerCase()
     query   = req.query
     delete query.t
@@ -219,6 +229,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       session = ''
       query   = _(scene_id: +name).extend(req.query)
       name    = qrcode_permanent_channel
+    else
+      session = req.session.id
 
     [session, name, query]
 
