@@ -71,7 +71,7 @@ html
     div#div_home.page.scrolled_to
       div.header
         div.try
-        img#qrcode_home(continuous='', src='/wx/qrcode/home?rand=#{~~(1000 * Math.random())}')
+        img#qrcode_home(continuous='', src='http://weixinjs.org/wx/qrcode/home?rand=#{~~(1000 * Math.random())}')
         div
       div.middle
         div.container
@@ -671,7 +671,7 @@ html
               div.message_phone.tab-content(data-message-title='扫一扫')
                 div.try
                 div.login_pic 
-                  img(id='登录二维码', src='/wx/qrcode?from=网页&rand=#{~~(1000 * Math.random())}')
+                  img(id='登录二维码', src='http://weixinjs.org/wx/qrcode?from=网页&rand=#{~~(1000 * Math.random())}')
                   // img(id='登录二维码', src='/wx/qrcode?rand=#{~~(1000 * Math.random())}' data-title='title')
                   label 扫描成功, 
                     br                
@@ -700,11 +700,11 @@ html
                   
           div.row.like_fruit_pic
             div.col-md-5
-              img(class='临时二维码',src='/wx/qrcode/fruits?name=苹果&rand=#{~~(1000 * Math.random())}')
+              img(class='临时二维码',src='http://weixinjs.org/wx/qrcode/fruits?name=苹果&rand=#{~~(1000 * Math.random())}')
               div.apple
                 
             div.col-md-6
-              img(class='临时二维码', continuous='', src='/wx/qrcode/fruits?name=樱桃&rand=#{~~(1000 * Math.random())}')
+              img(class='临时二维码', continuous='', src='http://weixinjs.org/wx/qrcode/fruits?name=樱桃&rand=#{~~(1000 * Math.random())}')
               div.cherry
 
 
@@ -742,7 +742,7 @@ html
                     p.subscribe_title 扫一扫
                      br
                      | 与他们共同关注
-                    img(id='永久二维码', continuous='', src='/wx/qrcode/6?from=路牌')
+                    img(id='永久二维码', continuous='', src='http://weixinjs.org/wx/qrcode/6?from=路牌')
 
     // 关注与取消关注 
     div#div_subscribe.page
