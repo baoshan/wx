@@ -2303,8 +2303,22 @@ span.note:before{
 
 
 
+/* 仅适用IE */
+@media screen\0 {
+  
+  /* 发送消息切换按钮 */
+  .send_message_nav li a{
+    background:url(http://cdn.weixinjs.org/img/send_message/send_message_icon@2x.png) no-repeat;
+    background-size: 444px 171px;
+  }
+    
+ /* 接收其他消息：发送消息切换按钮 */
+  .other_message_nav li a{
+    background:url(http://cdn.weixinjs.org/img/message_all/message_all_icon@2x.png) no-repeat;
+    background-size: auto 171px;
+  }
 
-
+}
 
 
 /* Retina device*/
