@@ -5,7 +5,7 @@ body{
   display: block;
   padding-top: 0;
   font-size:16px;
-  font-family:'Segoe UI light','Arial','黑体';
+  -font-family:'Segoe UI light','Arial','黑体';
   color:#000;
   text-align:justify;
   text-justify:auto;
