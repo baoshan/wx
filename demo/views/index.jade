@@ -458,7 +458,7 @@ html
                   pre.language-coffeescript
                     code
                       :escape
-                        wx.upload 'image', 'image.jpg', (req, res) ->
+                        wx.upload 'image', 'image.jpg', (err, res) ->
                           # res.media_id 是上传图片的 media_id
                   br
                   b 主动发送客服图片消息：
@@ -484,7 +484,7 @@ html
                   pre.language-coffeescript
                     code
                       :escape
-                        wx.upload 'voice', 'voice.amr', (req, res) ->
+                        wx.upload 'voice', 'voice.amr', (err, res) ->
                           # res.media_id 是可以重用的语音 media_id
                   br
                   b 主动发送客服语音消息：
@@ -510,7 +510,7 @@ html
                   pre.language-coffeescript
                     code
                       :escape
-                        wx.upload 'video', 'video.mp4', (req, res) ->
+                        wx.upload 'video', 'video.mp4', (err, res) ->
                           # res.media_id 是可以重用的视频 media_id
                   br
                   b 主动发送视频消息：
@@ -535,7 +535,7 @@ html
                   pre.language-coffeescript
                     code
                       :escape
-                        wx.upload 'thumb', 'cover.jpg', (req, res) ->
+                        wx.upload 'thumb', 'cover.jpg', (err, res) ->
                           # res.thumb_media_id 是可以重用的缩略图 thumb_media_id
                   br
                   b 主动发送音乐消息：举一反三😄

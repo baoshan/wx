@@ -47,7 +47,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   #
   # + 消息订阅专用客户端。
   # + 其余通用操作客户端；
-  {port, host, options} = redis_options ? {}
+  {port, host, options} = redis_options ? {port: null, host: null, options: null}
   redis_pubsub = redis.createClient port, host, options
   redis_client = redis.createClient port, host, options
 
@@ -62,9 +62,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 点击各个按钮的处理句柄；
   # + 扫描不同二维码处理句柄；
   # + 响应不同文字消息的句柄。
-  @click_handlers = {}
-  @scan_handlers  = {}
-  @text_handlers  = []
+  click_handlers = {}
+  scan_handlers  = {}
+  text_handlers  = []
 
   # ### 二维码参数
   #
@@ -82,7 +82,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 未响应的微信请求。
   unsent_dt_responses = {}
   unsent_mb_responses = {}
-  
+
   # ### `REDIS`订阅：
   #
   # + `WX:ACCESS_TOKEN`：访问令牌自动更新事件；
@@ -111,8 +111,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         [session, name, query] = JSON.parse message.id
         [req, res] = dt_res
 
+        # 允许跨域请求。
+        res.header 'Access-Control-Allow-Origin', req.headers.origin
+        res.header 'Access-Control-Allow-Credentials', on
+
         # 服务器端已定义处理句柄时：
-        if scan_handler = @scan_handlers[name]
+        if scan_handler = scan_handlers[name]
 
           # + 用原始扫码消息增补请求对象。
           # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -155,8 +159,15 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         [session, name, query] = JSON.parse message.id
         if name is qrcode_permanent_channel
           for [req, res] in dt_res
+            # 允许跨域请求。
+            res.header 'Access-Control-Allow-Origin', req.headers.origin
+            res.header 'Access-Control-Allow-Credentials', on
             res.send message.content
-        else dt_res[1].send message.content
+        else
+          # 允许跨域请求。
+          dt_res[1].header 'Access-Control-Allow-Origin', dt_res[0].headers.origin
+          dt_res[1].header 'Access-Control-Allow-Credentials', on
+          dt_res[1].send message.content
 
   # ### 创建路由器
   wx = router = express.Router()
@@ -209,7 +220,6 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # + 会话
     # + 名称
     # + 查询
-    session = req.session.id
     name    = (req.params.name ? '').toLowerCase()
     query   = req.query
     delete query.t
@@ -219,6 +229,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       session = ''
       query   = _(scene_id: +name).extend(req.query)
       name    = qrcode_permanent_channel
+    else
+      session = req.session.id
 
     [session, name, query]
 
@@ -397,11 +409,11 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             process_scan = ->
               id = JSON.stringify [session, name, query]
 
-              # 
+              #
 
               # 永久二维码直接在微信响应进程处理。
               if name is qrcode_permanent_channel
-                if scan_handler = @scan_handlers[name]
+                if scan_handler = scan_handlers[name]
 
                     # + 用原始扫码消息增补请求对象。
                     # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -438,12 +450,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                   # + 服务器端已注册处理句柄时，缓存微信端的请求。
                   # + 服务器端未注册处理句柄时，向微信端响应`OK`。
-                  if @scan_handlers[name] then unsent_mb_responses[id] = res
+                  if scan_handlers[name] then unsent_mb_responses[id] = res
                   else res.ok()
 
                 # 无桌面端关注时，如已注册处理句柄，
                 # 将二维码的查询参数增补至请求对象查询参数中，在当前进程内处理。
-                else if scan_handler = @scan_handlers[name]
+                else if scan_handler = scan_handlers[name]
                   _(req.query).extend(query)
                   scan_handler(req, res, ->)
 
@@ -473,7 +485,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
             # 收到文本消息时，如注册了文本处理句柄，使用该句柄处理，否则响应`200`。
             when 'text'
-              for [pattern, text_handler] in @text_handlers
+              for [pattern, text_handler] in text_handlers
                 if (typeof pattern is 'string' and message.content.trim() is pattern) or (typeof pattern is 'object' and match = message.content.match(pattern))
                   _(req.params).extend(match)
                   text_handler(req, res)
@@ -518,7 +530,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     #
                     #   1. 使用订阅流程处理；
                     #   2. 向桌面端发送用户。
-                    if @scan_handlers[name]
+                    if scan_handlers[name]
                       scan [session, name, query]
 
                     # 未定义对应扫码处理流程时：
@@ -539,13 +551,19 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 收到点击按钮消息时，
                 when 'click'
-                  if click_handler = @click_handlers[req.event_key]
+                  if click_handler = click_handlers[req.event_key]
                     click_handler(req, res)
                   else res.ok()
 
                 # 如为二维码扫描事件，
                 when 'scan' then scan()
-                
+
+                # 模板消息发送成功时，
+                when 'templatesendjobfinish'
+                  if @template_handler
+                    @template_handler(req, res)
+                  else res.ok()
+
                 # 尚无法处理的事件，直接响应`200`。
                 else res.ok()
 
@@ -569,7 +587,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # + 模拟被动回复（桌面端伺服进程发起）
   # + 真实被动回复（微信端伺服进程发起）
   reply = (req, id) ->
-  
+
     # ### 模拟被动回复
     #
     # 通过`REDIS`中继，由桌面端伺服进程，模拟向微信同步回复消息。
@@ -583,7 +601,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             content : content
         memo
       , {}
-  
+
     # ### 真实被动回复
     #
     # 消息通用部分：
@@ -598,7 +616,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
       #{message}
       </xml>"
-  
+
     # ### 回复文本
     text: (text) ->
       @send message "<MsgType><![CDATA[text]]></MsgType>
@@ -610,7 +628,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         @send message "<MsgType><![CDATA[image]]></MsgType>
           <Image><MediaId><![CDATA[#{image}]]></MediaId></Image>"
 
-      if image.match(regex_media_id)
+      if typeof image is 'string' and image.match(regex_media_id)
         send image
       else
         wx.upload 'image', image, (err, res) =>
@@ -632,7 +650,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         wx.upload 'voice', voice, (err, res) =>
           return @send 500 unless voice = res?.media_id
           send voice
-    
+
     # ### 回复视频
     video: (video) ->
       send = ({video, title, description}) =>
@@ -668,26 +686,26 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         wx.upload 'thumb', music.thumb_media, (err, res) =>
           return @send 500 unless music.thumb_media = res?.thumb_media_id
           send music
-  
+
     # 新闻类型另含：
     #
     # + 消息类型；
     # + 新闻条数；
     # + 新闻内容。
     news: (articles) ->
-  
+
       articles = [].concat(articles).map ({title, description, pic_url, url}) ->
         "<item>
-        <Title><![CDATA[#{title}]]></Title> 
+        <Title><![CDATA[#{title}]]></Title>
         <Description><![CDATA[#{description}]]></Description>
         <PicUrl><![CDATA[#{pic_url}]]></PicUrl>
         <Url><![CDATA[#{url}]]></Url>
         </item>"
-      
+
       @send message "<MsgType><![CDATA[news]]></MsgType>
         <ArticleCount>#{articles.length}</ArticleCount>
         <Articles>#{articles.join('')}</Articles>"
-  
+
     # 转移客服接口
     transfer: ->
       @send message "<MsgType><![CDATA[transfer_customer_service]]></MsgType>"
@@ -726,7 +744,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             image   : media_id: image
         , wrap callback
 
-      if image.match(regex_media_id)
+      if typeof image is 'string' and image.match(regex_media_id)
         send image
       else
         wx.upload 'image', image, (err, res) ->
@@ -812,6 +830,18 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             url         : url
       , wrap callback
 
+    template: ({template_id, topcolor, url, data}, callback) ->
+      request
+        method : 'POST'
+        url    : "#{api_common}/message/template/send?access_token=#{access_token}"
+        json   :
+          touser      : @openid
+          template_id : template_id
+          url         : url
+          topcolor    : topcolor or '#FF0000'
+          data        : data
+      , wrap callback
+
   # ### 与反`REST`设计战斗
   wrap = (callback = ->) ->
     (err, res) ->
@@ -863,12 +893,15 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   # ### 注册消息处理句柄
   _.extend router,
 
+    # ### 向合理使用场景暴露访问口令
+    access_token: -> access_token
+
     # ### 注册文本消息处理句柄
     text: (pattern, handler) =>
       if typeof pattern in ['function']
         handler = pattern
         pattern = /.*/
-      @text_handlers.push [pattern, handler]
+      text_handlers.push [pattern, handler]
       @
 
     # ### 注册图片消息处理句柄
@@ -890,9 +923,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     subscribe   : (@subscribe_handler) => @
     unsubscribe : (@unsubscribe_handler) => @
 
+    # ### 注册模板消息处理句柄
+    templatesendjobfinish: (@templatesendjobfinish_handler) => @
+
     # ### 注册点击菜单按钮处理句柄
     click: (key, handler) =>
-      @click_handlers[key] = handler
+      click_handlers[key] = handler
       @
 
     # ### 注册二维码处理句柄
@@ -900,7 +936,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       if typeof channel is 'function'
         handler = channel
         channel = ''
-      @scan_handlers[channel.toLowerCase()] = handler
+      scan_handlers[channel.toLowerCase()] = handler
       @
 
     # ### 检索用户基本信息
@@ -920,17 +956,17 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       else _(openid: openid).extend(user_actions)
 
     # ### 文件上传
-    #
-    # 直接调用`curl`命令，完成文件上传。
     upload: (type, media, callback = ->) =>
-      exec "curl -F media=@#{media} \"#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}\"", (err, res) ->
+      r = request.post
+        url  : "#{api_binary}/media/upload?access_token=#{access_token}&type=#{type}"
+        json : on
+      , (err, res) ->
         return callback err if err
-        try
-          res = JSON.parse res
-        catch err
-          return callback err
-        return callback res if res.errcode
-        callback null, res
+        callback null, res.body
+      form = r.form()
+      form.append 'media', if typeof media is 'string' then fs.createReadStream(media) else media
+      # HACK: send an extra '\r\n' to end the media data.
+      form.append 'hack', ''
       @
 
     # ### 文件下载

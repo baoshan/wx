@@ -85,7 +85,7 @@ else
 
   # ### MESSAGE_IMAGE
   wx.text '图片', (req, res) ->
-    res.image 'image.jpg'
+    res.image 'cover.jpg'
 
   # ### MESSAGE_VOICE
   wx.voice (req, res) ->

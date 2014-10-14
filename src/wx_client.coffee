@@ -43,7 +43,7 @@ $.fn.scan = (handler, options) ->
           start = Date.now()
           scan_url = encodeURI(decodeURI(src.replace(/(.*)(\/qrcode)($|((\?|\/).*))/i, '$1/scan$3')))
           scan_url = if scan_url.indexOf('?') isnt -1 then scan_url + "&t=#{Date.now()}" else scan_url + "?t=#{Date.now()}"
-          $.ajax(scan_url)
+          $.ajax(url: scan_url, xhrFields: withCredentials: on)
           .success (params) ->
             clearTimeout(timeout)
             $(img).addClass('scanned')
