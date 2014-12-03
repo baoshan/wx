@@ -485,13 +485,14 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
             # 收到文本消息时，如注册了文本处理句柄，使用该句柄处理，否则响应`200`。
             when 'text'
-              for [pattern, text_handler] in text_handlers
+              async.eachSeries text_handlers, ([pattern, text_handler], callback) ->
                 if (typeof pattern is 'string' and message.content.trim() is pattern) or (typeof pattern is 'object' and match = message.content.match(pattern))
                   _(req.params).extend(match)
-                  text_handler(req, res)
-                  handled = on
-                  break
-              res.ok() unless handled
+                  text_handler req, res, callback
+                else
+                  callback()
+              , ->
+                res.ok()
 
             # 收到图片、语音、视频、地理位置、链接时，如注册了处理句柄，使用该句柄处理：
             when 'image', 'voice', 'video', 'location', 'link'
@@ -897,11 +898,15 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     access_token: -> access_token
 
     # ### 注册文本消息处理句柄
-    text: (pattern, handler) =>
-      if typeof pattern in ['function']
-        handler = pattern
-        pattern = /.*/
-      text_handlers.push [pattern, handler]
+    text: (args...) =>
+      switch typeof _.first(args)
+        when 'function'
+          pattern = /.*/
+        when 'string'
+          pattern = args.shift()
+
+      for handler in args
+        text_handlers.push [pattern, handler]
       @
 
     # ### 注册图片消息处理句柄
