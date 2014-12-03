@@ -8,3 +8,4 @@ demo/wx_secret.coffee
 *.swo
 *.log
 .DS_Store
+.idea
