@@ -1,6 +1,6 @@
 {
   "name": "wx",
-  "version": "0.0.20",
+  "version": "0.0.23",
   "description": "W(ei)X(in) -- (minimalist) WeChat Middleware for Express.js",
   "main": "lib/wx.js",
   "dependencies": {

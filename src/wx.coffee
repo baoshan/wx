@@ -257,7 +257,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       , (err, result) ->
         if err
           console.error err
-          return res.send 500
+          return res.status(500).end()
         {body: {ticket}} = result
         key = "WX:TICKETS:#{ticket}"
         value = JSON.stringify [session, name, query]
@@ -301,24 +301,24 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         if dt_res.some(([_req]) -> _req is req)
           unsent_dt_responses[id] = unsent_dt_responses[id].filter(([_req]) -> _req isnt req)
           delete unsent_dt_responses[id] unless unsent_dt_responses[id].length
-          res.send 404
+          res.status(404).end()
       else
         delete unsent_dt_responses[id] if dt_res[0] is req
-        res.send 404
+        res.status(404).end()
     , qrcode_long_poll_timeout * 1000
 
   # ### 伺服桌面端脚本
   router.get '/wx.js', (req, res) ->
-    res.sendfile "#{__dirname}/wx_client.js"
+    res.sendFile "#{__dirname}/wx_client.js"
 
   router.get '/ace/ace.js', (req, res) ->
-    res.sendfile "#{__dirname}/ace/ace.js"
+    res.sendFile "#{__dirname}/ace/ace.js"
 
   router.get '/ace/mode-markdown.js', (req, res) ->
-    res.sendfile "#{__dirname}/ace/mode-markdown.js"
+    res.sendFile "#{__dirname}/ace/mode-markdown.js"
 
   router.get '/ace/theme-terminal.js', (req, res) ->
-    res.sendfile "#{__dirname}/ace/theme-terminal.js"
+    res.sendFile "#{__dirname}/ace/theme-terminal.js"
 
   # ### 编辑菜单页面占位符
   markdown_2_json_placeholder = 'function markdown_2_json() {}'
@@ -332,7 +332,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
   # ### 访问管理员页面
   router.get '/admin', (req, res) ->
-    res.sendfile "#{__dirname}/login.html"
+    res.sendFile "#{__dirname}/login.html"
 
   router.post '/admin', (req, res) ->
     # console.log req.body.app_secret, req.body.action
@@ -340,18 +340,18 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       res.send fs.readFileSync("#{__dirname}/login.html").toString().replace('ERROR', 'show')
     else if req.body.action is '开始管理'
       wx.get_menu (err, json) ->
-        return res.send 500, err if err
+        return res.status(500).send(err) if err
         # console.log 'RENDER ADMIN'
         res.send render_admin json_2_markdown json
     else if req.body.action is '更新菜单'
       wx.create_menu markdown_2_json(req.body.buttons), (err) ->
         if err
           console.error err
-          return res.send 500 if err
+          return res.status(500).end() if err
         wx.get_menu (err, json) ->
           if err
             console.error err
-            return res.send 500 if err
+            return res.status(500).end() if err
           res.send render_admin json_2_markdown json
 
   # ### 接口验证中间件
@@ -360,7 +360,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   router.use ({query: {signature, timestamp, nonce}}, res, next) =>
     message = _([token, timestamp, nonce]).sort().join('')
     return next() if signature is crypto.createHash('sha1').update(message).digest('hex')
-    res.send 401
+    res.status(401).end()
 
   # ### 验证接口有效性
   router.get '/', ({query: {echostr}}, res) ->
@@ -376,12 +376,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       encoding : 'utf8'
 
     , (err, string) =>
-      return res.send 400 if err
+      return res.status(400).end() if err
       console.info string if debug
 
       # 2. 解析请求XML内容。
       xml2js.parseString string, (err, result) =>
-        return res.send 400 if err
+        return res.status(400).end() if err
 
         # 3. 按消息内容增补请求对象。
         message = Object.keys(result.xml).reduce (memo, key) ->
@@ -572,7 +572,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
           wx.user message.from_user_name, (err, user) ->
             if err
               console.error err
-              return res.send 500
+              return res.status(500).end()
             process_message user
 
         # 禁用自动组装时，用仅带编号的用户替代。
@@ -636,7 +636,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
             send image
           else
             console.error err or res
-            @send 500
+            @status(500).end()
 
     # ### 回复语音
     voice: (voice) ->
@@ -648,7 +648,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         send voice
       else
         wx.upload 'voice', voice, (err, res) =>
-          return @send 500 unless voice = res?.media_id
+          return @status(500).end() unless voice = res?.media_id
           send voice
 
     # ### 回复视频
@@ -665,7 +665,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         send video
       else
         wx.upload 'video', video.video, (err, res) =>
-          return @send 500 unless video.video = res?.media_id
+          return @status(500).end() unless video.video = res?.media_id
           send video
 
     # ### 回复音乐
@@ -684,7 +684,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         send music
       else
         wx.upload 'thumb', music.thumb_media, (err, res) =>
-          return @send 500 unless music.thumb_media = res?.thumb_media_id
+          return @status(500).end() unless music.thumb_media = res?.thumb_media_id
           send music
 
     # 新闻类型另含：
@@ -711,7 +711,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       @send message "<MsgType><![CDATA[transfer_customer_service]]></MsgType>"
 
     # 不发送任何消息，仅响应`200`。
-    ok: -> @send 200
+    ok: -> @status(200).end()
 
   # ### 客服消息
   user_actions =
