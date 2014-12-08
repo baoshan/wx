@@ -65,6 +65,14 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   click_handlers = {}
   scan_handlers  = {}
   text_handlers  = []
+  @image_handlers = []
+  @voice_handlers = []
+  @video_handlers = []
+  @location_handlers = []
+  @link_handlers = []
+  @subscribe_handlers = []
+  @unsubscribe_handlers = []
+  @templatesendjobfinish_handlers = []
 
   # ### 二维码参数
   #
@@ -130,7 +138,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
           # 3. `桌面`回掉：模拟成桌面端注册回调方法。
           mobile  = reply req, message.id
           desktop_callback = -> res.send [message.msg_id].concat Array::slice.call arguments
-          scan_handler req, mobile, desktop_callback
+          async.eachSeries scan_handler, (handler, callback) ->
+            handler req, mobile, desktop_callback, callback
+          , ->
 
         # 否则（有桌面端监听扫码结果，服务器端未定义如何处理时），
         # （默认）向桌面端发送扫码用户。
@@ -431,7 +441,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     # 3. `桌面`回掉：模拟成桌面端注册回调方法。
                     mobile  = res
                     desktop_callback = -> redis_client.publish 'WX:SEND:DESKTOP', JSON.stringify id: id, content: [message.msg_id].concat Array::slice.call(arguments)
-                    scan_handler req, mobile, desktop_callback
+                    async.eachSeries scan_handler, (handler, callback) ->
+                      handler req, mobile, desktop_callback, callback
+                    , ->
 
                 # 未注册永久二维码处理流程时：
                 # + 响应微信`200`
@@ -457,8 +469,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 # 将二维码的查询参数增补至请求对象查询参数中，在当前进程内处理。
                 else if scan_handler = scan_handlers[name]
                   _(req.query).extend(query)
-                  scan_handler(req, res, ->)
-
+                  async.eachSeries scan_handler, (handler, callback) ->
+                    handler req, res, callback
+                  , ->
                 # 未注册处理句柄时，向微信端响应`OK`。
                 else res.ok()
 
@@ -496,8 +509,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
             # 收到图片、语音、视频、地理位置、链接时，如注册了处理句柄，使用该句柄处理：
             when 'image', 'voice', 'video', 'location', 'link'
-              if handler = @["#{msg_type}_handler"] then handler req, res
-              else res.ok()
+              async.eachSeries @["#{msg_type}_handlers"], (handler, callback) ->
+                handler req, res, callback
+              , ->
+                res.ok()
 
             # 收到事件消息时，判断事件类型：
             when 'event'
@@ -510,9 +525,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   # 2. 退化至订阅句柄处理；
                   # 3. 无订阅句柄时发`OK`。
                   subscribe = ->
-                    if @subscribe_handler
-                      @subscribe_handler req, res
-                    else res.ok()
+                    async.eachSeries @subscribe_handlers, (handler, callback) ->
+                      handler req, res, callback
+                    , ->
+                      res.ok()
 
                   # 收到订阅消息时，如果由扫码产生，并且有对应名称二维码的处理句柄，
                   # 使用二维码处理句柄处理，否则，使用订阅处理句柄处理。
@@ -546,14 +562,17 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 # + 如注册了取消订阅处理句柄，使用该句柄处理；
                 # + 否则响应`200`。
                 when 'unsubscribe'
-                  if @unsubscribe_handler
-                    @unsubscribe_handler req, res
-                  else res.ok()
+                  async.eachSeries @unsubscribe_handler, (handler, callback) ->
+                    handler req, res, callback
+                  , ->
+                    res.ok()
 
                 # 收到点击按钮消息时，
                 when 'click'
-                  if click_handler = click_handlers[req.event_key]
-                    click_handler(req, res)
+                  if handlers = click_handlers[req.event_key]
+                    async.eachSeries handlers, (handler, callback) ->
+                      handler req, res, callback
+                    , ->
                   else res.ok()
 
                 # 如为二维码扫描事件，
@@ -561,9 +580,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 模板消息发送成功时，
                 when 'templatesendjobfinish'
-                  if @template_handler
-                    @template_handler(req, res)
-                  else res.ok()
+                  async.eachSeries @template_handler, (handler, callback) ->
+                    handler req, res, callback
+                  , ->
+                    res.ok()
 
                 # 尚无法处理的事件，直接响应`200`。
                 else res.ok()
@@ -910,38 +930,70 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       @
 
     # ### 注册图片消息处理句柄
-    image: (@image_handler) => @
+    image: (args...) =>
+      for handler in args
+        @image_handlers.push handler
+      @
 
     # ### 注册语音消息处理句柄
-    voice: (@voice_handler) => @
+    voice: (args...) =>
+      for handler in args
+        @voice_handlers.push handler
+      @
 
     # ### 注册视频消息处理句柄
-    video: (@video_handler) => @
+    video: (args...) =>
+      for handler in args
+        @video_handlers.push handler
+      @
 
     # ### 注册地理位置处理句柄
-    location: (@location_handler) => @
+    location: (args...) =>
+      for handler in args
+        @location_handlers.push handler
+      @
 
     # ### 注册链接处理句柄
-    link: (@link_handler) => @
+    link: (args...) =>
+      for handler in args
+        @link_handlers.push handler
+      @
 
     # ### 注册关注与取消关注处理句柄
-    subscribe   : (@subscribe_handler) => @
-    unsubscribe : (@unsubscribe_handler) => @
+    subscribe   :  (args...) =>
+      for handler in args
+        @subscribe_handlers.push handler
+      @
+    unsubscribe : (args...) =>
+      for handler in args
+        @unsubscribe_handlers.push handler
+      @
 
     # ### 注册模板消息处理句柄
-    templatesendjobfinish: (@templatesendjobfinish_handler) => @
+    templatesendjobfinish: (args...) =>
+      for handler in args
+        @templatesendjobfinish_handlers.push handler
+      @
 
     # ### 注册点击菜单按钮处理句柄
-    click: (key, handler) =>
-      click_handlers[key] = handler
+    click: (key, args...) =>
+      unless click_handlers[key]
+        click_handlers[key] = []
+      for handler in args
+        click_handlers[key].push handler
       @
 
     # ### 注册二维码处理句柄
-    scan: (channel, handler) =>
-      if typeof channel is 'function'
-        handler = channel
-        channel = ''
-      scan_handlers[channel.toLowerCase()] = handler
+    scan: (args...) =>
+      switch typeof _.first(args)
+        when 'function'
+          channel = ''
+        when 'string'
+          channel = args.shift().toLowerCase()
+      unless click_handlers[channel]
+        scan_handlers[channel] = []
+      for handler in args
+        scan_handlers[channel].push handler
       @
 
     # ### 检索用户基本信息
