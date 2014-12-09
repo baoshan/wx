@@ -929,6 +929,11 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       else if _.isString pattern
         pattern = new RegExp(args.shift(), 'i')
 
+      text_handlers = _.compact _.map text_handlers, ([pattern_exist, handlers_exist]) ->
+        if pattern.toString() is pattern_exist.toString()
+          return null
+        else
+          return [pattern_exist, handlers_exist]
       text_handlers.push [pattern, args]
       @
 
