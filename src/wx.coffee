@@ -140,7 +140,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
           desktop_callback = -> res.send [message.msg_id].concat Array::slice.call arguments
           async.eachSeries scan_handler, (handler, callback) ->
             handler req, mobile, desktop_callback, callback
-          , ->
+          , (err) ->
+            console.err err if err
 
         # 否则（有桌面端监听扫码结果，服务器端未定义如何处理时），
         # （默认）向桌面端发送扫码用户。
@@ -443,7 +444,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     desktop_callback = -> redis_client.publish 'WX:SEND:DESKTOP', JSON.stringify id: id, content: [message.msg_id].concat Array::slice.call(arguments)
                     async.eachSeries scan_handler, (handler, callback) ->
                       handler req, mobile, desktop_callback, callback
-                    , ->
+                    , (err) ->
+                      console.err err if err
 
                 # 未注册永久二维码处理流程时：
                 # + 响应微信`200`
@@ -471,7 +473,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   _(req.query).extend(query)
                   async.eachSeries scan_handler, (handler, callback) ->
                     handler req, res, callback
-                  , ->
+                  , (err) ->
+                    console.err err if err
+                    res.ok()
                 # 未注册处理句柄时，向微信端响应`OK`。
                 else res.ok()
 
@@ -506,14 +510,16 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   , callback
                 else
                   callback()
-              , ->
+              , (err) ->
+                console.err err if err
                 res.ok()
 
             # 收到图片、语音、视频、地理位置、链接时，如注册了处理句柄，使用该句柄处理：
             when 'image', 'voice', 'video', 'location', 'link'
               async.eachSeries @["#{msg_type}_handlers"], (handler, callback) ->
                 handler req, res, callback
-              , ->
+              , (err) ->
+                console.err err if err
                 res.ok()
 
             # 收到事件消息时，判断事件类型：
@@ -529,7 +535,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   subscribe = ->
                     async.eachSeries @subscribe_handlers, (handler, callback) ->
                       handler req, res, callback
-                    , ->
+                    , (err) ->
+                      console.err err if err
                       res.ok()
 
                   # 收到订阅消息时，如果由扫码产生，并且有对应名称二维码的处理句柄，
@@ -566,7 +573,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 when 'unsubscribe'
                   async.eachSeries @unsubscribe_handler, (handler, callback) ->
                     handler req, res, callback
-                  , ->
+                  , (err) ->
+                    console.err err if err
                     res.ok()
 
                 # 收到点击按钮消息时，
@@ -574,7 +582,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   if handlers = click_handlers[req.event_key]
                     async.eachSeries handlers, (handler, callback) ->
                       handler req, res, callback
-                    , ->
+                    , (err) ->
+                      console.err err if err
+                      res.ok()
                   else res.ok()
 
                 # 如为二维码扫描事件，
@@ -584,7 +594,8 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 when 'templatesendjobfinish'
                   async.eachSeries @template_handler, (handler, callback) ->
                     handler req, res, callback
-                  , ->
+                  , (err) ->
+                    console.err err if err
                     res.ok()
 
                 # 尚无法处理的事件，直接响应`200`。
