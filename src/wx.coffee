@@ -8,6 +8,7 @@ crypto     = require 'crypto'
 redis      = require 'redis'
 _          = require 'underscore'
 _s         = require 'underscore.string'
+qs         = require 'qs'
 request    = require 'request'
 getRawBody = require 'raw-body'
 xml2js     = require 'xml2js'
@@ -65,14 +66,6 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
   click_handlers = {}
   scan_handlers  = {}
   text_handlers  = []
-  @image_handlers = []
-  @voice_handlers = []
-  @video_handlers = []
-  @location_handlers = []
-  @link_handlers = []
-  @subscribe_handlers = []
-  @unsubscribe_handlers = []
-  @templatesendjobfinish_handlers = []
 
   # ### 二维码参数
   #
@@ -124,7 +117,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         res.header 'Access-Control-Allow-Credentials', on
 
         # 服务器端已定义处理句柄时：
-        if scan_handler = scan_handlers[name]
+        if scan_handlers[name]
 
           # + 用原始扫码消息增补请求对象。
           # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -138,10 +131,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
           # 3. `桌面`回掉：模拟成桌面端注册回调方法。
           mobile  = reply req, message.id
           desktop_callback = -> res.send [message.msg_id].concat Array::slice.call arguments
-          async.eachSeries scan_handler, (handler, callback) ->
+          async.eachSeries scan_handlers[name], (handler, callback) ->
             handler req, mobile, desktop_callback, callback
           , (err) ->
-            console.err err if err
+            console.error err if err
 
         # 否则（有桌面端监听扫码结果，服务器端未定义如何处理时），
         # （默认）向桌面端发送扫码用户。
@@ -232,13 +225,13 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # + 名称
     # + 查询
     name    = (req.params.name ? '').toLowerCase()
-    query   = req.query
+    query   = _(req.query).clone()
     delete query.t
 
     # 调整永久二维码名称为`permanent`，查询为场景编号。
     if 1 <= name <= qrcode_permanent_maximum
       session = ''
-      query   = _(scene_id: +name).extend(req.query)
+      query   = _(scene_id: +name).extend(query)
       name    = qrcode_permanent_channel
     else
       session = req.session.id
@@ -362,7 +355,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         wx.get_menu (err, json) ->
           if err
             console.error err
-            return res.status(500).end() if err
+            return res.status(500).end()
           res.send render_admin json_2_markdown json
 
   # ### 接口验证中间件
@@ -424,7 +417,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
               # 永久二维码直接在微信响应进程处理。
               if name is qrcode_permanent_channel
-                if scan_handler = scan_handlers[name]
+                if scan_handlers[name]
 
                     # + 用原始扫码消息增补请求对象。
                     # + 用传入消息的`user`键，增补请求对象的`user`键，并具备客服消息回复功能。
@@ -433,7 +426,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                     # 永久二维码的`scene_id`作为`params`供客户使用。
                     req.params.scene_id = query.scene_id
-                    _(req.query).extend(query)
+                    req.url += "&" + qs.stringify(query)
 
                     # 调用扫码处理句柄参数为：
                     #
@@ -442,10 +435,14 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     # 3. `桌面`回掉：模拟成桌面端注册回调方法。
                     mobile  = res
                     desktop_callback = -> redis_client.publish 'WX:SEND:DESKTOP', JSON.stringify id: id, content: [message.msg_id].concat Array::slice.call(arguments)
-                    async.eachSeries scan_handler, (handler, callback) ->
+                    async.eachSeries scan_handlers[name], (handler, callback) ->
                       handler req, mobile, desktop_callback, callback
                     , (err) ->
-                      console.err err if err
+                      if err
+                        console.error err
+                        mobile.status(500).end()
+                      else
+                        mobile.ok()
 
                 # 未注册永久二维码处理流程时：
                 # + 响应微信`200`
@@ -469,13 +466,16 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 无桌面端关注时，如已注册处理句柄，
                 # 将二维码的查询参数增补至请求对象查询参数中，在当前进程内处理。
-                else if scan_handler = scan_handlers[name]
-                  _(req.query).extend(query)
-                  async.eachSeries scan_handler, (handler, callback) ->
-                    handler req, res, callback
+                else if scan_handlers[name]
+                  req.url += "&" + qs.stringify(query)
+                  async.eachSeries scan_handlers[name], (scan_handler, callback) ->
+                    scan_handler req, res, (->), callback
                   , (err) ->
-                    console.err err if err
-                    res.ok()
+                    if err
+                      console.error err
+                      res.status(500).end()
+                    else res.ok()
+
                 # 未注册处理句柄时，向微信端响应`OK`。
                 else res.ok()
 
@@ -511,16 +511,20 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 else
                   callback()
               , (err) ->
-                console.err err if err
-                res.ok()
+                if err
+                  console.error err
+                  res.status(500).end()
+                else res.ok()
 
             # 收到图片、语音、视频、地理位置、链接时，如注册了处理句柄，使用该句柄处理：
             when 'image', 'voice', 'video', 'location', 'link'
-              async.eachSeries @["#{msg_type}_handlers"], (handler, callback) ->
+              async.eachSeries (@["#{msg_type}_handlers"] or []), (handler, callback) ->
                 handler req, res, callback
               , (err) ->
-                console.err err if err
-                res.ok()
+                if err
+                  console.error err
+                  res.status(500).end()
+                else res.ok()
 
             # 收到事件消息时，判断事件类型：
             when 'event'
@@ -533,11 +537,13 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                   # 2. 退化至订阅句柄处理；
                   # 3. 无订阅句柄时发`OK`。
                   subscribe = ->
-                    async.eachSeries @subscribe_handlers, (handler, callback) ->
+                    async.eachSeries (@subscribe_handlers or []), (handler, callback) ->
                       handler req, res, callback
                     , (err) ->
-                      console.err err if err
-                      res.ok()
+                      if err
+                        console.error err
+                        res.status(500).end()
+                      else res.ok()
 
                   # 收到订阅消息时，如果由扫码产生，并且有对应名称二维码的处理句柄，
                   # 使用二维码处理句柄处理，否则，使用订阅处理句柄处理。
@@ -571,11 +577,13 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 # + 如注册了取消订阅处理句柄，使用该句柄处理；
                 # + 否则响应`200`。
                 when 'unsubscribe'
-                  async.eachSeries @unsubscribe_handler, (handler, callback) ->
+                  async.eachSeries (@unsubscribe_handlers or []), (handler, callback) ->
                     handler req, res, callback
                   , (err) ->
-                    console.err err if err
-                    res.ok()
+                    if err
+                      console.error err
+                      res.status(500).end()
+                    else res.ok()
 
                 # 收到点击按钮消息时，
                 when 'click'
@@ -583,8 +591,10 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                     async.eachSeries handlers, (handler, callback) ->
                       handler req, res, callback
                     , (err) ->
-                      console.err err if err
-                      res.ok()
+                      if err
+                        console.error err
+                        res.status(500).end()
+                      else res.ok()
                   else res.ok()
 
                 # 如为二维码扫描事件，
@@ -592,11 +602,13 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
                 # 模板消息发送成功时，
                 when 'templatesendjobfinish'
-                  async.eachSeries @template_handler, (handler, callback) ->
+                  async.eachSeries (@templatesendjobfinish_handlers or []), (handler, callback) ->
                     handler req, res, callback
                   , (err) ->
-                    console.err err if err
-                    res.ok()
+                    if err
+                      console.error err
+                      res.status(500).end()
+                    else res.ok()
 
                 # 尚无法处理的事件，直接响应`200`。
                 else res.ok()
@@ -931,74 +943,55 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     access_token: -> access_token
 
     # ### 注册文本消息处理句柄
-    text: (args...) =>
-      pattern = _.first(args)
+    text: (handlers...) =>
+      pattern = _.first(handlers)
       if _.isRegExp pattern
-        pattern = args.shift()
+        pattern = handlers.shift()
       else if _.isFunction pattern
         pattern = /.*/
       else if _.isString pattern
-        pattern = new RegExp(args.shift(), 'i')
+        pattern = new RegExp(handlers.shift(), 'i')
 
-      text_handlers = _.compact _.map text_handlers, ([pattern_exist, handlers_exist]) ->
-        if pattern.toString() is pattern_exist.toString()
-          return null
-        else
-          return [pattern_exist, handlers_exist]
-      text_handlers.push [pattern, args]
+      text_handlers = _.filter text_handlers, ([pattern_exist]) ->
+        pattern.toString() isnt pattern_exist.toString()
+      text_handlers.push [pattern, handlers]
       @
 
     # ### 注册图片消息处理句柄
-    image: (args...) =>
-      @image_handlers = args
-      @
+    image: (@image_handlers...) => @
 
     # ### 注册语音消息处理句柄
-    voice: (args...) =>
-      @voice_handlers = args
-      @
+    voice: (@voice_handlers...) => @
 
     # ### 注册视频消息处理句柄
-    video: (args...) =>
-      @video_handlers = args
-      @
+    video: (@video_handlers...) => @
 
     # ### 注册地理位置处理句柄
-    location: (args...) =>
-      @location_handlers = args
-      @
+    location: (@location_handlers...) => @
 
     # ### 注册链接处理句柄
-    link: (args...) =>
-      @link_handlers = args
-      @
+    link: (@link_handlers...) => @
 
     # ### 注册关注与取消关注处理句柄
-    subscribe   :  (args...) =>
-      @subscribe_handlers = args
-      @
-    unsubscribe : (args...) =>
-      @unsubscribe_handlers = args
-      @
+    subscribe   :   (@subscribe_handlers...) => @
+    unsubscribe : (@unsubscribe_handlers...) => @
 
     # ### 注册模板消息处理句柄
-    templatesendjobfinish: (args...) =>
-      @templatesendjobfinish_handlers = args
-      @
+    templatesendjobfinish: (@templatesendjobfinish_handlers...) => @
 
     # ### 注册点击菜单按钮处理句柄
-    click: (key, args...) =>
-      click_handlers[key] = args
+    click: (key, handlers...) =>
+      click_handlers[key] = handlers
       @
 
     # ### 注册二维码处理句柄
-    scan: (args...) =>
-      switch typeof _.first(args)
+    scan: (handlers...) =>
+      switch typeof _.first(handlers)
         when 'function'
           channel = ''
         when 'string'
-          channel = args.shift().toLowerCase()
-      scan_handlers[channel] = args
+          channel = handlers.shift().toLowerCase()
+      scan_handlers[channel] = handlers
       @
 
     # ### 检索用户基本信息
