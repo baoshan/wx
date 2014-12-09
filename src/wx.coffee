@@ -498,10 +498,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
             # 收到文本消息时，如注册了文本处理句柄，使用该句柄处理，否则响应`200`。
             when 'text'
-              async.eachSeries text_handlers, ([pattern, text_handler], callback) ->
-                if (typeof pattern is 'string' and message.content.trim() is pattern) or (typeof pattern is 'object' and match = message.content.match(pattern))
+              async.eachSeries text_handlers, ([pattern, handlers], callback) ->
+                if match = message.content.trim().match pattern
                   _(req.params).extend(match)
-                  text_handler req, res, callback
+                  async.eachSeries handlers, (handler, callback) ->
+                    handler req, res, callback
+                  , callback
                 else
                   callback()
               , ->
@@ -919,68 +921,58 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
     # ### 注册文本消息处理句柄
     text: (args...) =>
-      switch typeof _.first(args)
-        when 'function'
-          pattern = /.*/
-        when 'string'
-          pattern = args.shift()
+      pattern = _.first(args)
+      if _.isRegExp pattern
+        pattern = args.shift()
+      else if _.isFunction pattern
+        pattern = /.*/
+      else if _.isString pattern
+        pattern = new RegExp(args.shift(), 'i')
 
-      for handler in args
-        text_handlers.push [pattern, handler]
+      text_handlers.push [pattern, args]
       @
 
     # ### 注册图片消息处理句柄
     image: (args...) =>
-      for handler in args
-        @image_handlers.push handler
+      @image_handlers = args
       @
 
     # ### 注册语音消息处理句柄
     voice: (args...) =>
-      for handler in args
-        @voice_handlers.push handler
+      @voice_handlers = args
       @
 
     # ### 注册视频消息处理句柄
     video: (args...) =>
-      for handler in args
-        @video_handlers.push handler
+      @video_handlers = args
       @
 
     # ### 注册地理位置处理句柄
     location: (args...) =>
-      for handler in args
-        @location_handlers.push handler
+      @location_handlers = args
       @
 
     # ### 注册链接处理句柄
     link: (args...) =>
-      for handler in args
-        @link_handlers.push handler
+      @link_handlers = args
       @
 
     # ### 注册关注与取消关注处理句柄
     subscribe   :  (args...) =>
-      for handler in args
-        @subscribe_handlers.push handler
+      @subscribe_handlers = args
       @
     unsubscribe : (args...) =>
-      for handler in args
-        @unsubscribe_handlers.push handler
+      @unsubscribe_handlers = args
       @
 
     # ### 注册模板消息处理句柄
     templatesendjobfinish: (args...) =>
-      for handler in args
-        @templatesendjobfinish_handlers.push handler
+      @templatesendjobfinish_handlers = args
       @
 
     # ### 注册点击菜单按钮处理句柄
     click: (key, args...) =>
-      unless click_handlers[key]
-        click_handlers[key] = []
-      for handler in args
-        click_handlers[key].push handler
+      click_handlers[key] = args
       @
 
     # ### 注册二维码处理句柄
@@ -990,10 +982,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
           channel = ''
         when 'string'
           channel = args.shift().toLowerCase()
-      unless click_handlers[channel]
-        scan_handlers[channel] = []
-      for handler in args
-        scan_handlers[channel].push handler
+      scan_handlers[channel] = args
       @
 
     # ### 检索用户基本信息
