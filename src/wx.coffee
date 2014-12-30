@@ -764,7 +764,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       @send message "<MsgType><![CDATA[device_text]]></MsgType>
         <DeviceType><![CDATA[#{req.device_type}]]></DeviceType>
         <DeviceID><![CDATA[#{req.device_id}]]></DeviceID>
-        <SessionID><![CDATA[#{req.session_id}]]></SessionID>
+        <SessionID>#{req.session_id}</SessionID>
         <Content><![CDATA[#{content}]]></Content>"
 
     # 不发送任何消息，仅响应`200`。
