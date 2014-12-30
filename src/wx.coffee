@@ -14,6 +14,7 @@ getRawBody = require 'raw-body'
 xml2js     = require 'xml2js'
 express    = require 'express'
 async      = require 'async'
+base64     = require 'base64'
 
 # ### 接口地址
 #
@@ -517,7 +518,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
                 else res.ok()
 
             # 收到图片、语音、视频、地理位置、链接时，如注册了处理句柄，使用该句柄处理：
-            when 'image', 'voice', 'video', 'location', 'link'
+            when 'image', 'voice', 'video', 'location', 'link', 'device_text'
               async.eachSeries (@["#{msg_type}_handlers"] or []), (handler, callback) ->
                 handler req, res, callback
               , (err) ->
@@ -756,6 +757,16 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     transfer: ->
       @send message "<MsgType><![CDATA[transfer_customer_service]]></MsgType>"
 
+    # 响应设备发来的消息
+    device: (content) ->
+      content = base64.encode(content)
+      
+      @send message "<MsgType><![CDATA[device_text]]></MsgType>
+        <DeviceType><![CDATA[#{req.device_type}]]></DeviceType>
+        <DeviceID><![CDATA[#{req.device_id}]]></DeviceID>
+        <SessionID><![CDATA[#{req.session_id}]]></SessionID>
+        <Content><![CDATA[#{content}]]></Content>"
+
     # 不发送任何消息，仅响应`200`。
     ok: -> @status(200).end()
 
@@ -971,6 +982,9 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
     # ### 注册链接处理句柄
     link: (@link_handlers...) => @
+
+    # ### 注册设备消息处理句柄
+    device: (@device_text_handlers...) => @
 
     # ### 注册关注与取消关注处理句柄
     subscribe   :   (@subscribe_handlers...) => @
