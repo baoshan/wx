@@ -760,7 +760,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # 响应设备发来的消息
     device: (content) ->
       content = base64.encode(content)
-      
+
       @send message "<MsgType><![CDATA[device_text]]></MsgType>
         <DeviceType><![CDATA[#{req.device_type}]]></DeviceType>
         <DeviceID><![CDATA[#{req.device_id}]]></DeviceID>
