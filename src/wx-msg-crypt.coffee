@@ -67,10 +67,11 @@ class Prpcrypt
     buf = Buffer.concat plainChunks
     # extract the message part.
     buf = PKCS7.decode buf
-    buf = buf.slice 20, buf.length - appId.length
+    buf = buf.slice 20, buf.length - appid.length
     buf.toString 'utf8'
 
 generated_signature = (token, timestamp, nonce, encrypt) ->
+  console.log "#{token}-#{timestamp}-#{nonce}-#{encrypt}"
   sha1 = crypto.createHash 'sha1'
   sha1.update [token, timestamp, nonce, encrypt].sort().join ''
   sha1.digest 'hex'
@@ -93,16 +94,17 @@ class WXBizMsgCrypt
     </xml>"
 
   decrypt: (msg, callback) ->
-    xml2js.parseString msg, (err, result) ->
+    xml2js.parseString msg, (err, result) =>
       throw err if err
       xml = result.xml
+      console.log xml
       if xml.Encrypt
-        signature = generated_signature @token, xml.TimeStamp, xml.Nonce, xml.Encrypt
-        unless signature == msg_signature
+        signature = generated_signature @token, xml.TimeStamp[0], xml.Nonce[0], xml.Encrypt[0]
+        unless signature == xml.MsgSignature[0]
           callback 'Signuature is not valid.', null
         else
           pc = new Prpcrypt @key
-          xml2js.parseString pc.decrypt(xml.Encrypt, @appId), callback
+          xml2js.parseString pc.decrypt(xml.Encrypt[0], @appId), callback
       else
         callback 'Not encrypted.', null
 
