@@ -59,7 +59,7 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
 
   # 消息加密解密器
   if encoding_aes_key
-    WXMsgCrypt = require './wx-msg-crypto'
+    WXMsgCrypt = require './wx-msg-crypt'
     wx_msg_crypt = new WXMsgCrypt token, encoding_aes_key, app_id
 
   #（默认）响应消息前，先通过微信接口组装用户信息。
