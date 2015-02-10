@@ -32,6 +32,7 @@ api_binary = 'http://file.api.weixin.qq.com/cgi-bin'
 #   - `token`
 #   - `app_id`
 #   - `app_secret`
+#   - `encoding_aes_key` （若提供则使用加密方式）
 #
 # + `redis`：`REDIS`连接参数（默认本地连接），包含：
 #
@@ -41,7 +42,7 @@ api_binary = 'http://file.api.weixin.qq.com/cgi-bin'
 #
 # + `populate_user`：是否自动组装用户信息，默认`on`；
 # + `debug`：调试模式，输出调试信息。
-module.exports = ({token, app_id, app_secret, redis_options, populate_user, debug}) ->
+module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, populate_user, debug}) ->
 
   # ### REDIS客户端
   #
@@ -55,6 +56,11 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
 
   # 访问口令局部缓存。
   access_token = null
+
+  # 消息加密解密器
+  if encoding_aes_key
+    WXMsgCrypt = require './wx-msg-crypto'
+    wx_msg_crypt = new WXMsgCrypt token, encoding_aes_key, app_id
 
   #（默认）响应消息前，先通过微信接口组装用户信息。
   populate_user ?= on
@@ -385,7 +391,7 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
       console.info string if debug
 
       # 2. 解析请求XML内容。
-      xml2js.parseString string, (err, result) =>
+      callback = (err, result) =>
         return res.status(400).end() if err
 
         # 3. 按消息内容增补请求对象。
@@ -626,6 +632,12 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
         else
           process_message wx.user message.from_user_name
 
+      # 如果存在密钥，就进行解密
+      if encoding_aes_key
+        wx_msg_crypt.decrypt string, callback
+      else
+        xml2js.parseString string, callback
+
   # ### 媒体标识符格式
   regex_media_id = /^[\w\_\-]{64}$/
 
@@ -656,13 +668,22 @@ module.exports = ({token, app_id, app_secret, redis_options, populate_user, debu
     # + 发送方用户名；
     # + 接收方用户名；
     # + 消息创建时间。
-    message = (message) ->
-      "<xml>
-      <ToUserName><![CDATA[#{req.from_user_name}]]></ToUserName>
-      <FromUserName><![CDATA[#{req.to_user_name}]]></FromUserName>
-      <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
-      #{message}
-      </xml>"
+    if encoding_aes_key
+      message = (message) ->
+        wx_msg_crypt.encypt "<xml>
+          <ToUserName><![CDATA[#{req.from_user_name}]]></ToUserName>
+          <FromUserName><![CDATA[#{req.to_user_name}]]></FromUserName>
+          <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
+          #{message}
+          </xml>"
+    else
+      message = (message) ->
+        "<xml>
+        <ToUserName><![CDATA[#{req.from_user_name}]]></ToUserName>
+        <FromUserName><![CDATA[#{req.to_user_name}]]></FromUserName>
+        <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
+        #{message}
+        </xml>"
 
     # ### 回复文本
     text: (text) ->
