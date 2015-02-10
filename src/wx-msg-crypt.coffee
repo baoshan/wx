@@ -99,12 +99,8 @@ class WXBizMsgCrypt
       xml = result.xml
       console.log xml
       if xml.Encrypt
-        signature = generated_signature @token, xml.TimeStamp[0], xml.Nonce[0], xml.Encrypt[0]
-        unless signature == xml.MsgSignature[0]
-          callback 'Signuature is not valid.', null
-        else
-          pc = new Prpcrypt @key
-          xml2js.parseString pc.decrypt(xml.Encrypt[0], @appId), callback
+        pc = new Prpcrypt @key
+        xml2js.parseString pc.decrypt(xml.Encrypt[0], @appId), callback
       else
         callback 'Not encrypted.', null
 

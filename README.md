@@ -35,9 +35,10 @@
   ```coffeescript
    app = express()    
    wx  = new require 'wx'
-     token      : 'xxx-xx-xx'
-     app_id     : 'xx-xxx'
-     app_secret : 'xxxxxxxxxxxx'
+     token            : 'xxx-xx-xx'
+     app_id           : 'xx-xxx'
+     app_secret       : 'xxxxxxxxxxxx'
+     encoding_aes_key : 'xxxxxx'
    app.use '/wx', wx
    ```
 4.  启动应用程序后，修改微信开发模式中服务器配置为：`http://server.address/wx`，且有与程序相一致的`token`。

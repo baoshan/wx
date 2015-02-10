@@ -670,12 +670,12 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
     # + 消息创建时间。
     if encoding_aes_key
       message = (message) ->
-        wx_msg_crypt.encypt "<xml>
+        wx_msg_crypt.encrypt "<xml>
           <ToUserName><![CDATA[#{req.from_user_name}]]></ToUserName>
           <FromUserName><![CDATA[#{req.to_user_name}]]></FromUserName>
           <CreateTime>#{~~(Date.now() / 1000)}</CreateTime>
           #{message}
-          </xml>"
+          </xml>", req.query.timestamp, req.query.nonce
     else
       message = (message) ->
         "<xml>
