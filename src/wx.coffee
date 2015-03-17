@@ -433,6 +433,7 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
 
                     # 永久二维码的`scene_id`作为`params`供客户使用。
                     req.params.scene_id = query.scene_id
+                    _(req.query).extend(query)
                     req.url += "&" + qs.stringify(query)
 
                     # 调用扫码处理句柄参数为：
@@ -474,6 +475,7 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
                 # 无桌面端关注时，如已注册处理句柄，
                 # 将二维码的查询参数增补至请求对象查询参数中，在当前进程内处理。
                 else if scan_handlers[name]
+                  _(req.query).extend(query)
                   req.url += "&" + qs.stringify(query)
                   async.eachSeries scan_handlers[name], (scan_handler, callback) ->
                     scan_handler req, res, (->), callback
