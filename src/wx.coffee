@@ -99,13 +99,14 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
   # + `WX:SEND:DESKTOP`：在另外进程模拟的发送桌面端响应。
   #
   # 消息内容均为`JSON`格式。
-  redis_pubsub.subscribe 'WX:ACCESS_TOKEN', 'WX:SCAN:TEMPORARY', 'WX:SEND:MOBILE', 'WX:SEND:DESKTOP'
+  key_access_token = "WX:ACCESS_TOKEN:#{app_id}"
+  redis_pubsub.subscribe key_access_token, 'WX:SCAN:TEMPORARY', 'WX:SEND:MOBILE', 'WX:SEND:DESKTOP'
   redis_pubsub.on 'message', (channel, message) =>
     message = JSON.parse "#{message}"
     switch channel
 
       # `ACCESS_TOKEN`事件时：更新访问口令局部缓存：
-      when 'WX:ACCESS_TOKEN' then access_token = message
+      when key_access_token then access_token = message
 
       # `WX:SCAN:TEMPORARY`事件时：
       when 'WX:SCAN:TEMPORARY'
@@ -186,9 +187,9 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
   # ### 获取访问令牌
   lock_fetching = 5
   do fetch_access_token = =>
-    redis_client.watch 'WX:ACCESS_TOKEN'
-    redis_client.ttl 'WX:ACCESS_TOKEN', (err, ttl) =>
-      redis_client.get 'WX:ACCESS_TOKEN', (err, _access_token) =>
+    redis_client.watch key_access_token
+    redis_client.ttl key_access_token, (err, ttl) =>
+      redis_client.get key_access_token, (err, _access_token) =>
         if ttl > lock_fetching
           redis_client.multi().exec (err, multi_res) =>
             return fetch_access_token() unless multi_res
@@ -196,7 +197,7 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
             setTimeout fetch_access_token, (ttl - lock_fetching) * 1000
         else if "#{_access_token}" not in ['FETCHING']
           redis_client.multi()
-          .setex('WX:ACCESS_TOKEN', lock_fetching, 'FETCHING')
+          .setex(key_access_token, lock_fetching, 'FETCHING')
           .exec (err, multi_res) =>
             return fetch_access_token() unless multi_res
 
@@ -213,11 +214,11 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
               # 存在错误代码时，控制台提示，删除令牌。
               if res.body.errcode
                 console.error '微信认证失败，登录微信公共平台获取开发者凭据 https://mp.weixin.qq.com'
-                redis_client.del 'WX:ACCESS_TOKEN'
+                redis_client.del key_access_token
               else
                 {access_token: _access_token, expires_in} = res.body
-                redis_client.setex 'WX:ACCESS_TOKEN', expires_in, _access_token
-                redis_client.publish 'WX:ACCESS_TOKEN', JSON.stringify _access_token
+                redis_client.setex key_access_token, expires_in, _access_token
+                redis_client.publish key_access_token, JSON.stringify _access_token
                 setTimeout fetch_access_token, (expires_in - lock_fetching) * 1000
         else setTimeout fetch_access_token, ttl * 1000
 
