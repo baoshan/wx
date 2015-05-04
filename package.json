@@ -14,8 +14,7 @@
     "request" : "*",
     "node-uuid" : "*",
     "async": "*",
-    "qs": "*",
-    "base64": "*"
+    "qs": "*"
   },
   "devDependencies": {},
   "scripts": {
