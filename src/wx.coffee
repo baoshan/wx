@@ -626,8 +626,8 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
         if populate_user and message.event?.toLowerCase() not in ['unsubscribe']
           wx.user message.from_user_name, (err, user) ->
             if err
-              console.error err
-              return res.status(500).end()
+              console.error err if debug
+              return process_message wx.user message.from_user_name
             process_message user
 
         # 禁用自动组装时，用仅带编号的用户替代。
