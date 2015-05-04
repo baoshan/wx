@@ -14,7 +14,6 @@ getRawBody = require 'raw-body'
 xml2js     = require 'xml2js'
 express    = require 'express'
 async      = require 'async'
-base64     = require 'base64'
 
 # ### 接口地址
 #
@@ -783,7 +782,7 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
 
     # 响应设备发来的消息
     device: (content) ->
-      content = base64.encode(content)
+      content = (new Buffer(content)).toString('base64')
 
       @send message "<MsgType><![CDATA[device_text]]></MsgType>
         <DeviceType><![CDATA[#{req.device_type}]]></DeviceType>
