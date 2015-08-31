@@ -20,7 +20,6 @@ PKCS7 = do ->
     pad = data.readUInt8 data.length - 1
     if pad < 1 || pad > 32
       pad = 0
-    console.log pad
     data.slice 0, data.length - pad
 
 class Prpcrypt
@@ -71,7 +70,6 @@ class Prpcrypt
     buf.toString 'utf8'
 
 generated_signature = (token, timestamp, nonce, encrypt) ->
-  console.log "#{token}-#{timestamp}-#{nonce}-#{encrypt}"
   sha1 = crypto.createHash 'sha1'
   sha1.update [token, timestamp, nonce, encrypt].sort().join ''
   sha1.digest 'hex'
@@ -97,7 +95,6 @@ class WXBizMsgCrypt
     xml2js.parseString msg, (err, result) =>
       throw err if err
       xml = result.xml
-      console.log xml
       if xml.Encrypt
         pc = new Prpcrypt @key
         xml2js.parseString pc.decrypt(xml.Encrypt[0], @appId), callback
