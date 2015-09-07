@@ -184,7 +184,8 @@ module.exports = ({token, app_id, app_secret, encoding_aes_key, redis_options, p
   wx = router = express.Router()
 
   # ### 获取访问令牌
-  redis_client.del key_access_token
+  # redis_client.del key_access_token
+  # https://github.com/baoshan/wx/pull/40
   lock_fetching = 5
   do fetch_access_token = =>
     redis_client.watch key_access_token
